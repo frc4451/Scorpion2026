@@ -47,7 +47,8 @@ public class RobotContainer {
   private void configureBindings() {
     driveSubsystem.setDefaultCommand(
         driveSubsystem.setDrivetrainOpenLoop(
-            () -> -controller.getLeftY() * DriveConstants.kOpenLoopVoltageScalar, () -> -controller.getRightX()* DriveConstants.kOpenLoopVoltageScalar)
+            () -> -controller.getLeftY() * DriveConstants.kOpenLoopVoltageScalar,
+            () -> -controller.getRightX() * DriveConstants.kOpenLoopVoltageScalar)
         // driveSubsystem.setDrivetrainArcadeDrive(
         //     () -> -controller.getLeftY(), () -> -controller.getRightX())
         );
