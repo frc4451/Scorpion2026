@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.controllers.CommandCustomXboxController;
 import frc.robot.controllers.ControllerConstants;
+import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveIO;
 import frc.robot.subsystems.drive.DriveIOSim;
 import frc.robot.subsystems.drive.DriveIOSpark;
@@ -46,7 +47,7 @@ public class RobotContainer {
   private void configureBindings() {
     driveSubsystem.setDefaultCommand(
         driveSubsystem.setDrivetrainOpenLoop(
-            () -> -controller.getLeftY(), () -> -controller.getRightX())
+            () -> -controller.getLeftY() * DriveConstants.kOpenLoopVoltageScalar, () -> -controller.getRightX()* DriveConstants.kOpenLoopVoltageScalar)
         // driveSubsystem.setDrivetrainArcadeDrive(
         //     () -> -controller.getLeftY(), () -> -controller.getRightX())
         );

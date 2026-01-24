@@ -54,4 +54,7 @@ public class DriveConstants {
   /** Characterization Constants */
   /** FeedForward Ramp Rate; Stolen from AdvantageKit */
   public static final double FF_RAMP_RATE = 0.1; // Volts/Sec
+
+  /** Open Loop Scalar from Driver Controller Inputs */
+  public static final double kOpenLoopVoltageScalar = 6.0;
 }
