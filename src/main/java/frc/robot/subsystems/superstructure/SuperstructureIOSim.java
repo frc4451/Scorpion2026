@@ -28,7 +28,6 @@ public class SuperstructureIOSim implements SuperstructureIO {
   private double feederAppliedVolts = 0.0;
   private double intakeLauncherAppliedVolts = 0.0;
 
-  @Override
   public void updateInputs(SuperstructureIOInputs inputs) {
     feederSim.setInputVoltage(feederAppliedVolts);
     feederSim.update(0.02);

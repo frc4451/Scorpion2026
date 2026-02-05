@@ -73,7 +73,6 @@ public class SuperstructureIOSpark implements SuperstructureIO {
                 PersistMode.kPersistParameters));
   }
 
-  @Override
   public void updateInputs(SuperstructureIOInputs inputs) {
     ifOk(feeder, feederEncoder::getPosition, (value) -> inputs.feederPositionRad = value);
     ifOk(feeder, feederEncoder::getVelocity, (value) -> inputs.feederVelocityRadPerSec = value);
