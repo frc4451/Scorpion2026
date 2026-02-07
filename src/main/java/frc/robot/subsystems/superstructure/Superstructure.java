@@ -8,6 +8,7 @@
 package frc.robot.subsystems.superstructure;
 
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.intakingFeederVoltage;
+import static frc.robot.subsystems.superstructure.SuperstructureConstants.intakingIntakeVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.launchingFeederVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.launchingLauncherVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUpFeederVoltage;
@@ -36,7 +37,7 @@ public class Superstructure extends SubsystemBase {
     return runEnd(
         () -> {
           io.setFeederVoltage(intakingFeederVoltage);
-          io.setIntakeLauncherVoltage(intakingFeederVoltage);
+          io.setIntakeLauncherVoltage(intakingIntakeVoltage);
         },
         () -> {
           io.setFeederVoltage(0.0);
@@ -49,7 +50,7 @@ public class Superstructure extends SubsystemBase {
     return runEnd(
         () -> {
           io.setFeederVoltage(-intakingFeederVoltage);
-          io.setIntakeLauncherVoltage(-intakingFeederVoltage);
+          io.setIntakeLauncherVoltage(-intakingIntakeVoltage);
         },
         () -> {
           io.setFeederVoltage(0.0);
