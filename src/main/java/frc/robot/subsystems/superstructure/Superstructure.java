@@ -8,6 +8,7 @@
 package frc.robot.subsystems.superstructure;
 
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.intakingFeederVoltage;
+import static frc.robot.subsystems.superstructure.SuperstructureConstants.intakingIntakeVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.launchingFeederVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.launchingLauncherVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUpFeederVoltage;
@@ -16,11 +17,8 @@ import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUp
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public class Superstructure extends SubsystemBase {
-  private static final frc.robot.subsystems.superstructure.SuperstructureIOInputsAutoLogged
-      SuperstructureIOInputsAutoLogged = null;
   private final SuperstructureIO io;
   private final SuperstructureIOInputsAutoLogged inputs = new SuperstructureIOInputsAutoLogged();
 
@@ -30,20 +28,16 @@ public class Superstructure extends SubsystemBase {
 
   @Override
   public void periodic() {
-    io.updateInputs(SuperstructureIOInputsAutoLogged);
-    Logger.processInputs("Superstructure", (LoggableInputs) inputs);
+    io.updateInputs(inputs);
+    Logger.processInputs(getName(), inputs);
   }
-
-  public class inputs {}
-
-  public class SuperstructureIOInputsAutoLogged {}
 
   /** Set the rollers to the values for intaking. */
   public Command intake() {
     return runEnd(
         () -> {
           io.setFeederVoltage(intakingFeederVoltage);
-          io.setIntakeLauncherVoltage(intakingFeederVoltage);
+          io.setIntakeLauncherVoltage(intakingIntakeVoltage);
         },
         () -> {
           io.setFeederVoltage(0.0);
@@ -56,7 +50,7 @@ public class Superstructure extends SubsystemBase {
     return runEnd(
         () -> {
           io.setFeederVoltage(-intakingFeederVoltage);
-          io.setIntakeLauncherVoltage(-intakingFeederVoltage);
+          io.setIntakeLauncherVoltage(-intakingIntakeVoltage);
         },
         () -> {
           io.setFeederVoltage(0.0);

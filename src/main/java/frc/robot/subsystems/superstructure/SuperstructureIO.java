@@ -24,7 +24,7 @@ public interface SuperstructureIO {
   }
 
   /** Update the set of loggable inputs. */
-  public default void updateInputs(SuperstructureIOInputsAutoLogged inputs) {}
+  public default void updateInputs(SuperstructureIOInputs inputs) {}
 
   /** Run the feeder at the specified voltage. */
   public default void setFeederVoltage(double volts) {}
