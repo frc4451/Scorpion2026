@@ -14,40 +14,48 @@ import frc.robot.subsystems.drive.DriveIOSpark;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon1;
+import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.SuperstructureIO;
+import frc.robot.subsystems.superstructure.SuperstructureIOSim;
+import frc.robot.subsystems.superstructure.SuperstructureIOSpark;
 
 public class RobotContainer {
   private final CommandCustomXboxController controller =
       new CommandCustomXboxController(ControllerConstants.kDriverControllerPort);
 
   private final DriveSubsystem driveSubsystem;
+  private final Superstructure superstructure;
 
   public RobotContainer() {
     DriveIO driveIO;
     GyroIO gyroIO;
+    SuperstructureIO superstructureIO;
 
     // Set up data receivers & replay source
     switch (Constants.currentMode) {
       case REAL:
         driveIO = new DriveIOSpark();
         gyroIO = new GyroIOPigeon1();
+        superstructureIO = new SuperstructureIOSpark();
         break;
 
       case SIM:
         driveIO = new DriveIOSim();
         gyroIO = new GyroIO() {};
-
+        superstructureIO = new SuperstructureIOSim();
         break;
 
       case REPLAY:
       default:
         driveIO = new DriveIO() {};
         gyroIO = new GyroIO() {};
+        superstructureIO = new SuperstructureIO() {};
 
         break;
     }
 
     driveSubsystem = new DriveSubsystem(driveIO, gyroIO);
-
+    superstructure = new Superstructure(superstructureIO);
     configureBindings();
   }
 
@@ -57,6 +65,10 @@ public class RobotContainer {
         // driveSubsystem.setDrivetrainArcadeDrive(
         //     () -> -controller.getLeftY(), () -> -controller.getRightX())
         );
+
+    controller.a().whileTrue(superstructure.intake());
+    controller.b().whileTrue(superstructure.eject());
+    controller.x().whileTrue(superstructure.launch());
   }
 
   public Command getAutonomousCommand() {
