@@ -72,6 +72,10 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return Commands.sequence(
+        driveSubsystem.getBLinePath("some_path_1"),
+        driveSubsystem.getBLinePath("some_path_2"),
+        driveSubsystem.getBLinePath("some_path_3")
+    );
   }
 }

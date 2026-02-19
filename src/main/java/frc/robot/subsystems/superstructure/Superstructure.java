@@ -17,6 +17,7 @@ import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUp
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public class Superstructure extends SubsystemBase {
   private final SuperstructureIO io;
@@ -29,7 +30,7 @@ public class Superstructure extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs(getName(), inputs);
+    Logger.processInputs(getName(), (LoggableInputs) inputs);
   }
 
   /** Set the rollers to the values for intaking. */

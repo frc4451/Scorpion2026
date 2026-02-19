@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,9 +16,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.lib.BLine.*;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public class DriveSubsystem extends SubsystemBase {
   private final DriveIO driveIO;
@@ -38,6 +41,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final DifferentialDrivePoseEstimator poseEstimator =
       new DifferentialDrivePoseEstimator(kinematics, new Rotation2d(), 0.0, 0.0, new Pose2d());
 
+  private final FollowPath.Builder pathBuilder;
+
   private Rotation2d rawGyroRotation = new Rotation2d();
   private double lastLeftPositionMeters = 0.0;
   private double lastRightPositionMeters = 0.0;
@@ -45,14 +50,48 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem(DriveIO driveIO, GyroIO gyroIO) {
     this.driveIO = driveIO;
     this.gyroIO = gyroIO;
+
+    // 1. Set global constraints
+    Path.setDefaultGlobalConstraints(
+        new Path.DefaultGlobalConstraints(
+            1.0, // maxVelocityMetersPerSec
+            2.0, // maxAccelerationMetersPerSec2
+            360.0, // maxVelocityDegPerSec
+            720.0, // maxAccelerationDegPerSec2
+            0.05, // endTranslationToleranceMeters
+            2.0, // endRotationToleranceDeg
+            0.3 // intermediateHandoffRadiusMeters
+            ));
+
+    // 2. Create a reusable path builder
+    this.pathBuilder =
+        new FollowPath.Builder(
+                this,
+                this::getPose,
+                this::getRobotRelativeSpeeds,
+                this::runClosedLoop,
+                new PIDController(1.0, 0.0, 0.0), // translation
+                new PIDController(1.0, 0.0, 0.0), // rotation
+                new PIDController(1.0, 0.0, 0.0) // cross-track
+                )
+            .withDefaultShouldFlip()
+            .withPoseReset(this::setPose);
+  }
+
+  public Command getBLinePath(String pathName) {
+    // 3. Load and follow a path
+    Path myPath = new Path(pathName); // loads deploy/autos/paths/myPathFile.json
+    Command followCommand = this.pathBuilder.build(myPath);
+
+    return Commands.sequence(Commands.print("Following Path: " + pathName), followCommand);
   }
 
   @Override
   public void periodic() {
     driveIO.updateInputs(driveIOInputs);
     gyroIO.updateInputs(gyroIOInputs);
-    Logger.processInputs(getName(), driveIOInputs);
-    Logger.processInputs(getName() + "Gyro", gyroIOInputs);
+    Logger.processInputs(getName(), (LoggableInputs) driveIOInputs);
+    Logger.processInputs(getName() + "Gyro", (LoggableInputs) gyroIOInputs);
     if (DriverStation.isDisabled()) {
       if (!isBrake) {
         isBrake = false;

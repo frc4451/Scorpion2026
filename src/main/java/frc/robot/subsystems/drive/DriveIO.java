@@ -19,7 +19,7 @@ public interface DriveIO {
 
   public default void configureMotorSettings(IdleMode mode) {}
 
-  public default void updateInputs(DriveIOInputs inputs) {}
+  public default void updateInputs(DriveIOInputs driveIOInputs) {}
 
   public default void setVoltage(double leftVolts, double rightVolts) {}
 
