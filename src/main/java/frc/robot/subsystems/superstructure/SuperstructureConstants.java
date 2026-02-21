@@ -16,10 +16,13 @@ public class SuperstructureConstants {
   public static final double intakeLauncherMotorReduction = 1.0;
   public static final int intakeLauncherCurrentLimit = 60;
 
-  public static final double intakingFeederVoltage = -7.0;
-  public static final double intakingIntakeVoltage = 10.0;
-  public static final double launchingFeederVoltage = 9.0;
-  public static final double launchingLauncherVoltage = 10.6;
-  public static final double spinUpFeederVoltage = -9.0;
-  public static final double spinUpSeconds = 1.0;
+  public static final double intakingFeederVoltage = 6.0;
+  public static final double intakingIntakeVoltage = -5.0;
+  public static final double launchingFeederVoltage = -6.0;
+  public static final double launchingLauncherVoltage = -8.5;
+  public static final double spinUpFeederVoltage = 7.0;
+  public static final double spinUpSeconds = 0.5;
 }
+// 56.5 in from hub
+// 26.5 in length
+// 26.1-ish in width

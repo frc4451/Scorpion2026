@@ -17,7 +17,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon1;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureIO;
 import frc.robot.subsystems.superstructure.SuperstructureIOSim;
-import frc.robot.subsystems.superstructure.SuperstructureIOSpark;
+import frc.robot.subsystems.superstructure.SuperstructureIOSparkNEO;
 
 public class RobotContainer {
   private final CommandCustomXboxController controller =
@@ -36,7 +36,7 @@ public class RobotContainer {
       case REAL:
         driveIO = new DriveIOSpark();
         gyroIO = new GyroIOPigeon1();
-        superstructureIO = new SuperstructureIOSpark();
+        superstructureIO = new SuperstructureIOSparkNEO();
         break;
 
       case SIM:
@@ -72,6 +72,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return Commands.sequence(Commands.deadline(Commands.waitSeconds(5), superstructure.launch()));
   }
 }

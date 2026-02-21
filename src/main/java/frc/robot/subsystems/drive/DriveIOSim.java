@@ -56,8 +56,8 @@ public class DriveIOSim implements DriveIO {
   }
 
   private void runVolts(double leftVolts, double rightVolts) {
-    leftAppliedVolts = MathUtil.clamp(leftVolts, -12.0, 12.0) * 20;
-    rightAppliedVolts = MathUtil.clamp(rightVolts, -12.0, 12.0) * 20;
+    leftAppliedVolts = MathUtil.clamp(leftVolts, -12.0, 12.0);
+    rightAppliedVolts = MathUtil.clamp(rightVolts, -12.0, 12.0);
   }
 
   @Override

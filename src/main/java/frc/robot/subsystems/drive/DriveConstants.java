@@ -23,7 +23,7 @@ public class DriveConstants {
   public static final double kMotorReduction = 8.45;
 
   // public static final double kMaxSpeed = 0.5;
-  public static final double kMaxSpeed = 0.5;
+  public static final double kMaxSpeed = 4.5;
 
   /** Real values for PIDF */
   public static final double kMotorKp = 0.0;
@@ -37,10 +37,10 @@ public class DriveConstants {
   public static final double kMotorKv = 0.163;
 
   /** Sim values for PID */
-  public static final double kSimKp = 0.0;
+  public static final double kSimKp = 1.0;
 
   public static final double kSimKi = 0.0;
-  public static final double kSimKd = 0.0;
+  public static final double kSimKd = 1.0;
 
   public static final double kSimKs = 0.2;
   public static final double kSimKv = 0.2;
