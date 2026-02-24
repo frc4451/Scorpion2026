@@ -23,7 +23,7 @@ public class DriveConstants {
   public static final double kMotorReduction = 8.45;
 
   // public static final double kMaxSpeed = 0.5;
-  public static final double kMaxSpeed = 4.5;
+  public static final double kMaxSpeed = 2.5;
 
   /** Real values for PIDF */
   public static final double kMotorKp = 0.0;
@@ -33,8 +33,8 @@ public class DriveConstants {
 
   public static final double kMotorKf = 0.00;
 
-  public static final double kMotorKs = 0.120;
-  public static final double kMotorKv = 0.163;
+  public static final double kMotorKs = 0.12675;
+  public static final double kMotorKv = 0.17423;
 
   /** Sim values for PID */
   public static final double kSimKp = 1.0;
@@ -42,8 +42,8 @@ public class DriveConstants {
   public static final double kSimKi = 0.0;
   public static final double kSimKd = 1.0;
 
-  public static final double kSimKs = 0.2;
-  public static final double kSimKv = 0.2;
+  public static final double kSimKs = 0.01957;
+  public static final double kSimKv = 0.21234;
 
   public static final DCMotor kGearbox = DCMotor.getNEO(2);
   public static final double kRobotMassKg = 35;

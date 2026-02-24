@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.controllers.CommandCustomXboxController;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureIO;
 import frc.robot.subsystems.superstructure.SuperstructureIOSim;
 import frc.robot.subsystems.superstructure.SuperstructureIOSparkNEO;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
   private final CommandCustomXboxController controller =
@@ -25,6 +27,8 @@ public class RobotContainer {
 
   private final DriveSubsystem driveSubsystem;
   private final Superstructure superstructure;
+
+  private final LoggedDashboardChooser<Command> autoChooser;
 
   public RobotContainer() {
     DriveIO driveIO;
@@ -57,6 +61,19 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystem(driveIO, gyroIO);
     superstructure = new Superstructure(superstructureIO);
     configureBindings();
+
+    autoChooser =
+        new LoggedDashboardChooser<Command>("Auto Choices", new SendableChooser<Command>());
+    configureAutos();
+  }
+
+  private void configureAutos() {
+    autoChooser.addOption(
+        "Sit and Shoot",
+        Commands.sequence(Commands.deadline(Commands.waitSeconds(5), superstructure.launch())));
+    autoChooser.addOption(
+        "Feed Forward Characterization", driveSubsystem.feedforwardCharacterization());
+    //autoChooser.addOption("Go Forward", driveSubsystem.goFoward());
   }
 
   private void configureBindings() {
@@ -66,12 +83,12 @@ public class RobotContainer {
         //     () -> -controller.getLeftY(), () -> -controller.getRightX())
         );
 
-    controller.a().whileTrue(superstructure.intake());
+    controller.rightTrigger().whileTrue(superstructure.intake());
     controller.b().whileTrue(superstructure.eject());
     controller.x().whileTrue(superstructure.launch());
   }
 
   public Command getAutonomousCommand() {
-    return Commands.sequence(Commands.deadline(Commands.waitSeconds(5), superstructure.launch()));
+    return autoChooser.get();
   }
 }
