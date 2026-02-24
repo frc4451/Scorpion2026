@@ -73,7 +73,7 @@ public class RobotContainer {
         Commands.sequence(Commands.deadline(Commands.waitSeconds(5), superstructure.launch())));
     autoChooser.addOption(
         "Feed Forward Characterization", driveSubsystem.feedforwardCharacterization());
-    //autoChooser.addOption("Go Forward", driveSubsystem.goFoward());
+    // autoChooser.addOption("Go Forward", driveSubsystem.goFoward());
   }
 
   private void configureBindings() {
