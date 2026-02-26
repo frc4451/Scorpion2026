@@ -70,7 +70,7 @@ public class RobotContainer {
   private void configureAutos() {
     autoChooser.addOption(
         "Sit and Shoot",
-        Commands.sequence(Commands.deadline(Commands.waitSeconds(5), superstructure.launch())));
+        Commands.sequence(Commands.deadline(Commands.waitSeconds(20), superstructure.launch())));
     autoChooser.addOption(
         "Feed Forward Characterization", driveSubsystem.feedforwardCharacterization());
     // autoChooser.addOption("Go Forward", driveSubsystem.goFoward());
