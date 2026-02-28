@@ -22,8 +22,10 @@ import frc.robot.subsystems.superstructure.SuperstructureIOSparkNEO;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
-  private final CommandCustomXboxController controller =
+  private final CommandCustomXboxController driveController =
       new CommandCustomXboxController(ControllerConstants.kDriverControllerPort);
+  private final CommandCustomXboxController opController =
+      new CommandCustomXboxController(ControllerConstants.kOperaterControllerPort);
 
   private final DriveSubsystem driveSubsystem;
   private final Superstructure superstructure;
@@ -78,14 +80,17 @@ public class RobotContainer {
 
   private void configureBindings() {
     driveSubsystem.setDefaultCommand(
-        driveSubsystem.driveCommand(() -> -controller.getLeftY(), () -> -controller.getRightX())
+        driveSubsystem.driveCommand(
+            () -> -driveController.getLeftY(), () -> -driveController.getRightX())
         // driveSubsystem.setDrivetrainArcadeDrive(
         //     () -> -controller.getLeftY(), () -> -controller.getRightX())
         );
 
-    controller.rightTrigger().whileTrue(superstructure.intake());
-    controller.b().whileTrue(superstructure.eject());
-    controller.x().whileTrue(superstructure.launch());
+    driveController.rightTrigger().whileTrue(superstructure.intake());
+    // controller.b().whileTrue(superstructure.eject());
+    opController.leftTrigger().whileTrue(superstructure.eject());
+    // controller.x().whileTrue(superstructure.launch());
+    opController.rightTrigger().whileTrue(superstructure.launch());
   }
 
   public Command getAutonomousCommand() {
