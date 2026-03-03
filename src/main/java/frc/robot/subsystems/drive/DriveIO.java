@@ -27,8 +27,4 @@ public interface DriveIO {
       double leftRadPerSec, double rightRadPerSec, double leftFFVolts, double rightFFVolts) {}
 
   public default void setDutyCycle(double leftOut, double rightOut) {}
-
-  public default void stop() {
-    setVoltage(0.0, 0.0);
-  }
 }

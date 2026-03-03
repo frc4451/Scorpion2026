@@ -16,13 +16,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.autonomous.bline.*;
 import frc.robot.lib.BLine.*;
 import java.util.function.DoubleSupplier;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
-import frc.robot.autonomous.bline.*;
 
 public class DriveSubsystem extends SubsystemBase {
   private final DriveIO driveIO;
@@ -79,8 +79,7 @@ public class DriveSubsystem extends SubsystemBase {
             .withDefaultShouldFlip()
             .withPoseReset(this::setPose);
 
-      
-FollowPath.Builder builder =
+    FollowPath.Builder builder =
         new FollowPath.Builder(
                 this, // The drive subsystem to require
                 this::getPose, // Supplier for current robot pose
@@ -91,9 +90,8 @@ FollowPath.Builder builder =
                 new PIDController(1.0, 0.0, 0.0) // Cross-track PID
                 )
             .withDefaultShouldFlip(); // Auto-flip for red alliance
-    
-    bLineBuilder = builder;
 
+    bLineBuilder = builder;
   }
 
   public Command getBLinePath(String pathName) {
@@ -102,7 +100,6 @@ FollowPath.Builder builder =
     Command followCommand = this.pathBuilder.build(myPath);
 
     return Commands.sequence(Commands.print("Following Path: " + pathName), followCommand);
-
   }
 
   @Getter private final FollowPath.Builder bLineBuilder;
@@ -117,7 +114,7 @@ FollowPath.Builder builder =
       if (!isBrake) {
         isBrake = false;
       }
-      driveIO.stop();
+      // driveIO.stop();
     } else {
       if (isBrake) {
         isBrake = false;

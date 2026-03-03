@@ -18,7 +18,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon1;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureIO;
 import frc.robot.subsystems.superstructure.SuperstructureIOSim;
-import frc.robot.subsystems.superstructure.SuperstructureIOSparkNEO;
+import frc.robot.subsystems.superstructure.SuperstructureIOSpark;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
@@ -42,7 +42,7 @@ public class RobotContainer {
       case REAL:
         driveIO = new DriveIOSpark();
         gyroIO = new GyroIOPigeon1();
-        superstructureIO = new SuperstructureIOSparkNEO();
+        superstructureIO = new SuperstructureIOSpark();
         break;
 
       case SIM:
@@ -70,9 +70,16 @@ public class RobotContainer {
   }
 
   private void configureAutos() {
+    // AutoManager autoManager = new AutoManager(driveSubsystem, superstructure);
+
     autoChooser.addOption(
         "Sit and Shoot",
         Commands.sequence(Commands.deadline(Commands.waitSeconds(20), superstructure.launch())));
+    autoChooser.addOption("Move and Shoot", autoManager.fiveFeetThenShoot());
+    autoChooser.addOption("one_foot", autoManager.oneFoot());
+    autoChooser.addOption("two_foot", autoManager.twoFoot());
+    autoChooser.addOption("red_foot", autoManager.redFoot());
+    autoChooser.addOption("blue_foot", autoManager.blueFoot());
   }
 
   private void configureBindings() {
