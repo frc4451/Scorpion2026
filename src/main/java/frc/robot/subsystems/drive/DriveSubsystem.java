@@ -18,9 +18,11 @@ import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.lib.BLine.*;
 import java.util.function.DoubleSupplier;
+import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
+import frc.robot.autonomous.bline.*;
 
 public class DriveSubsystem extends SubsystemBase {
   private final DriveIO driveIO;
@@ -76,6 +78,22 @@ public class DriveSubsystem extends SubsystemBase {
                 )
             .withDefaultShouldFlip()
             .withPoseReset(this::setPose);
+
+      
+FollowPath.Builder builder =
+        new FollowPath.Builder(
+                this, // The drive subsystem to require
+                this::getPose, // Supplier for current robot pose
+                this::getRobotRelativeSpeeds, // Supplier for current speeds
+                this::runClosedLoop, // Consumer to drive the robot
+                new PIDController(1.0, 0.0, 0.0), // Translation PID
+                new PIDController(1.0, 0.0, 0.0), // Rotation PID
+                new PIDController(1.0, 0.0, 0.0) // Cross-track PID
+                )
+            .withDefaultShouldFlip(); // Auto-flip for red alliance
+    
+    bLineBuilder = builder;
+
   }
 
   public Command getBLinePath(String pathName) {
@@ -84,7 +102,10 @@ public class DriveSubsystem extends SubsystemBase {
     Command followCommand = this.pathBuilder.build(myPath);
 
     return Commands.sequence(Commands.print("Following Path: " + pathName), followCommand);
+
   }
+
+  @Getter private final FollowPath.Builder bLineBuilder;
 
   @Override
   public void periodic() {

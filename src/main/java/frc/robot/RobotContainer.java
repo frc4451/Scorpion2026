@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.controllers.CommandCustomXboxController;
@@ -17,14 +18,19 @@ import frc.robot.subsystems.drive.GyroIOPigeon1;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureIO;
 import frc.robot.subsystems.superstructure.SuperstructureIOSim;
-import frc.robot.subsystems.superstructure.SuperstructureIOSpark;
+import frc.robot.subsystems.superstructure.SuperstructureIOSparkNEO;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
-  private final CommandCustomXboxController controller =
+  private final CommandCustomXboxController driveController =
       new CommandCustomXboxController(ControllerConstants.kDriverControllerPort);
+  private final CommandCustomXboxController opController =
+      new CommandCustomXboxController(ControllerConstants.kOperaterControllerPort);
 
   private final DriveSubsystem driveSubsystem;
   private final Superstructure superstructure;
+
+  private final LoggedDashboardChooser<Command> autoChooser;
 
   public RobotContainer() {
     DriveIO driveIO;
@@ -36,7 +42,7 @@ public class RobotContainer {
       case REAL:
         driveIO = new DriveIOSpark();
         gyroIO = new GyroIOPigeon1();
-        superstructureIO = new SuperstructureIOSpark();
+        superstructureIO = new SuperstructureIOSparkNEO();
         break;
 
       case SIM:
@@ -57,25 +63,34 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystem(driveIO, gyroIO);
     superstructure = new Superstructure(superstructureIO);
     configureBindings();
+
+    autoChooser =
+        new LoggedDashboardChooser<Command>("Auto Choices", new SendableChooser<Command>());
+    configureAutos();
+  }
+
+  private void configureAutos() {
+    autoChooser.addOption(
+        "Sit and Shoot",
+        Commands.sequence(Commands.deadline(Commands.waitSeconds(20), superstructure.launch())));
   }
 
   private void configureBindings() {
     driveSubsystem.setDefaultCommand(
-        driveSubsystem.driveCommand(() -> -controller.getLeftY(), () -> -controller.getRightX())
+        driveSubsystem.driveCommand(
+            () -> -driveController.getLeftY(), () -> -driveController.getRightX())
         // driveSubsystem.setDrivetrainArcadeDrive(
         //     () -> -controller.getLeftY(), () -> -controller.getRightX())
         );
 
-    controller.a().whileTrue(superstructure.intake());
-    controller.b().whileTrue(superstructure.eject());
-    controller.x().whileTrue(superstructure.launch());
+    driveController.rightTrigger().whileTrue(superstructure.intake());
+    // controller.b().whileTrue(superstructure.eject());
+    opController.leftTrigger().whileTrue(superstructure.eject());
+    // controller.x().whileTrue(superstructure.launch());
+    opController.rightTrigger().whileTrue(superstructure.launch());
   }
 
   public Command getAutonomousCommand() {
-    return Commands.sequence(
-        driveSubsystem.getBLinePath("some_path_1"),
-        driveSubsystem.getBLinePath("some_path_2"),
-        driveSubsystem.getBLinePath("some_path_3")
-    );
+    return autoChooser.get();
   }
 }
