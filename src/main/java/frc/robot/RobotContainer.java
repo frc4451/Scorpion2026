@@ -4,7 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.controllers.CommandCustomXboxController;
@@ -33,6 +34,7 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   public RobotContainer() {
+
     DriveIO driveIO;
     GyroIO gyroIO;
     SuperstructureIO superstructureIO;
@@ -65,8 +67,12 @@ public class RobotContainer {
     configureBindings();
 
     autoChooser =
-        new LoggedDashboardChooser<Command>("Auto Choices", new SendableChooser<Command>());
+        new LoggedDashboardChooser<Command>("Auto Choices", AutoBuilder.buildAutoChooser());
     configureAutos();
+
+    NamedCommands.registerCommand("Launch", superstructure.launch());
+    NamedCommands.registerCommand("Eject", superstructure.eject());
+    NamedCommands.registerCommand("Intake", superstructure.intake());
   }
 
   private void configureAutos() {
