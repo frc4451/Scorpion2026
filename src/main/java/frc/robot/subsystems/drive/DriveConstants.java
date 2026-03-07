@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drive;
 
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -57,4 +59,17 @@ public class DriveConstants {
 
   /** Open Loop Scalar from Driver Controller Inputs */
   public static final double kOpenLoopVoltageScalar = 6.0;
+
+  public static final RobotConfig ppConfig =
+      new RobotConfig(
+          kRobotMassKg,
+          kRobotMOI,
+          new ModuleConfig(
+              kWheelRadiusMeters,
+              kMaxSpeed,
+              kWheelCOF,
+              kGearbox.withReduction(kMotorReduction),
+              kCurrentLimit,
+              2),
+          kTrackWidthMeters);
 }

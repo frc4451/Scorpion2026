@@ -2,6 +2,7 @@ package frc.robot.subsystems.drive;
 
 import static frc.robot.subsystems.drive.DriveConstants.FF_RAMP_RATE;
 
+import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,10 +26,6 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPLTVController;
 
 public class DriveSubsystem extends SubsystemBase {
   private final DriveIO driveIO;
@@ -57,39 +54,52 @@ public class DriveSubsystem extends SubsystemBase {
     this.driveIO = driveIO;
     this.gyroIO = gyroIO;
 
-        // Load the RobotConfig from the GUI settings. You should probably
+    // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
     RobotConfig config;
-    try{
+    try {
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
       // Handle exception as needed
       e.printStackTrace();
     }
-
-    // Configure AutoBuilder last
-    AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
-            this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            new PPLTVController(0.02), // PPLTVController is the built in path following controller for differential drive trains
-            config, // The robot configuration
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-            this // Reference to this subsystem to set requirements
-    );
-
   }
+
+  // public void driveRobotRelative(ChassisSpeeds speeds) {
+  //   var moduleStates = kinematics.toSwerveModuleStates(speeds);
+  //   SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, kMaxSpeed);
+
+  //   frontLeft.
+  // }
+
+  //   // Configure AutoBuilder last
+  //   AutoBuilder.configure(
+  //       this::getPose, // Robot pose supplier
+  //       this::setPose, // Method to reset odometry (will be called if your auto has a starting
+  // pose)
+  //       this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+  //       (speeds, feedforwards) ->
+  //           runClosedLoop(
+  //               speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
+  //       // Also optionally outputs individual module feedforwards
+  //       new PPLTVController(
+  //           0.02), // PPLTVController is the built in path following controller for differential
+  //       // drive trains
+  //       ppConfig, // The robot configuration
+  //       () -> {
+  //         // Boolean supplier that controls when the path will be mirrored for the red alliance
+  //         // This will flip the path being followed to the red side of the field.
+  //         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+  //         var alliance = DriverStation.getAlliance();
+  //         if (alliance.isPresent()) {
+  //           return alliance.get() == DriverStation.Alliance.Red;
+  //         }
+  //         return false;
+  //       },
+  //       this // Reference to this subsystem to set requirements
+  //       );
+  // }
 
   @Override
   public void periodic() {
@@ -137,9 +147,9 @@ public class DriveSubsystem extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
-  public void setPose(Pose2d pose) {
-    poseEstimator.resetPose(pose);
-  }
+  // public void setPose(Optional<Pose2d> pose) {
+  //   poseEstimator.resetPose(pose);
+  // }
 
   @AutoLogOutput
   public ChassisSpeeds getRobotRelativeSpeeds() {

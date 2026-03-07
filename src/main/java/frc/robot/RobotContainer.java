@@ -76,13 +76,26 @@ public class RobotContainer {
   }
 
   private void configureAutos() {
+    // PathPlannerPath simple = PathPlannerPath.fromPathFile("Simple");
+
+    // Command followCommand = AutoBuilder.followPath(simple);
+
     autoChooser.addOption(
         "Sit and Shoot",
-        Commands.sequence(Commands.deadline(Commands.waitSeconds(20), superstructure.launch())));
+        Commands.sequence(Commands.deadline(Commands.waitSeconds(10), superstructure.launch())));
     autoChooser.addOption(
         "Feed Forward Characterization", driveSubsystem.feedforwardCharacterization());
     // autoChooser.addOption("Go Forward", driveSubsystem.goFoward());
+    // autoChooser.addDefaultOption("Simple", getAutonomousCommand());
+    autoChooser.addOption("Simple", getAutonomousCommand());
   }
+
+  // public Command getAutonomousPath() {
+  //   PathPlannerPath path = PathPlannerPath.fromPathFile("Backwards");
+  //   return new SequentialCommandGroup(
+  //       new InstantCommand(() -> driveSubsystem.setPose(path.getStartingHolonomicPose())));
+  //   AutoBuilder.followPath(path);
+  // }
 
   private void configureBindings() {
     driveSubsystem.setDefaultCommand(
@@ -93,9 +106,7 @@ public class RobotContainer {
         );
 
     driveController.rightTrigger().whileTrue(superstructure.intake());
-    // controller.b().whileTrue(superstructure.eject());
     opController.leftTrigger().whileTrue(superstructure.eject());
-    // controller.x().whileTrue(superstructure.launch());
     opController.rightTrigger().whileTrue(superstructure.launch());
   }
 
@@ -103,3 +114,4 @@ public class RobotContainer {
     return autoChooser.get();
   }
 }
+// EVERYTHING COMMENTED IS WHAT WE ATTEMPTED TO DO - EXCLUDING LINE 42
