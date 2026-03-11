@@ -147,9 +147,9 @@ public class DriveSubsystem extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
-  // public void setPose(Optional<Pose2d> pose) {
-  //   poseEstimator.resetPose(pose);
-  // }
+  public void resetPose(Pose2d pose) {
+    poseEstimator.resetPose(pose);
+  }
 
   @AutoLogOutput
   public ChassisSpeeds getRobotRelativeSpeeds() {

@@ -70,24 +70,22 @@ public class RobotContainer {
         new LoggedDashboardChooser<Command>("Auto Choices", AutoBuilder.buildAutoChooser());
     configureAutos();
 
-    NamedCommands.registerCommand("Launch", superstructure.launch());
+    NamedCommands.registerCommand("Launch", superstructure.autoLaunch(2.5));
     NamedCommands.registerCommand("Eject", superstructure.eject());
     NamedCommands.registerCommand("Intake", superstructure.intake());
   }
 
   private void configureAutos() {
-    // PathPlannerPath simple = PathPlannerPath.fromPathFile("Simple");
-
-    // Command followCommand = AutoBuilder.followPath(simple);
+    Command SimpleAuto = AutoBuilder.buildAuto("Simple.auto");
+    Command PokemonAuto = AutoBuilder.buildAuto("Pokemon.auto");
 
     autoChooser.addOption(
         "Sit and Shoot",
         Commands.sequence(Commands.deadline(Commands.waitSeconds(10), superstructure.launch())));
     autoChooser.addOption(
         "Feed Forward Characterization", driveSubsystem.feedforwardCharacterization());
-    // autoChooser.addOption("Go Forward", driveSubsystem.goFoward());
-    // autoChooser.addDefaultOption("Simple", getAutonomousCommand());
-    autoChooser.addOption("Simple", getAutonomousCommand());
+    autoChooser.addOption("Simple", SimpleAuto);
+    autoChooser.addOption("Pokemon", PokemonAuto);
   }
 
   // public Command getAutonomousPath() {

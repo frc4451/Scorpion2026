@@ -15,6 +15,7 @@ import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUp
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUpSeconds;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -76,5 +77,9 @@ public class Superstructure extends SubsystemBase {
               io.setFeederVoltage(0.0);
               io.setIntakeLauncherVoltage(0.0);
             });
+  }
+
+  public Command autoLaunch(double time) {
+    return Commands.deadline(Commands.waitSeconds(time), launch());
   }
 }
