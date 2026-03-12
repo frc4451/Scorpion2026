@@ -19,9 +19,9 @@ public class SuperstructureConstants {
   public static final double intakingFeederVoltage = 5.0;
   public static final double intakingIntakeVoltage = -4.0;
   public static final double launchingFeederVoltage = -7.0;
-  public static final double launchingLauncherVoltage = -8.5;
+  public static final double launchingLauncherVoltage = -8.0;
   public static final double spinUpFeederVoltage = 7.0;
-  public static final double spinUpSeconds = 0.5;
+  public static final double spinUpSeconds = 2.0;
 }
 // 56.5 in from hub
 // 26.5 in length
