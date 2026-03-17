@@ -76,16 +76,16 @@ public class RobotContainer {
   }
 
   private void configureAutos() {
-    Command SimpleAuto = AutoBuilder.buildAuto("Simple.auto");
-    Command PokemonAuto = AutoBuilder.buildAuto("Pokemon.auto");
+    // Command SimpleAuto = AutoBuilder.buildAuto("Simple.auto");
+    // Command PokemonAuto = AutoBuilder.buildAuto("Pokemon.auto");
 
     autoChooser.addOption(
         "Sit and Shoot",
         Commands.sequence(Commands.deadline(Commands.waitSeconds(10), superstructure.launch())));
     autoChooser.addOption(
         "Feed Forward Characterization", driveSubsystem.feedforwardCharacterization());
-    autoChooser.addOption("Simple", SimpleAuto);
-    autoChooser.addOption("Pokemon", PokemonAuto);
+    // autoChooser.addOption("Simple", SimpleAuto);
+    // autoChooser.addOption("Pokemon", PokemonAuto);
   }
 
   // public Command getAutonomousPath() {
