@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drive;
 
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -23,7 +25,7 @@ public class DriveConstants {
   public static final double kMotorReduction = 8.45;
 
   // public static final double kMaxSpeed = 0.5;
-  public static final double kMaxSpeed = 0.5;
+  public static final double kMaxSpeed = 3.0;
 
   /** Real values for PIDF */
   public static final double kMotorKp = 0.0;
@@ -33,17 +35,17 @@ public class DriveConstants {
 
   public static final double kMotorKf = 0.00;
 
-  public static final double kMotorKs = 0.120;
-  public static final double kMotorKv = 0.163;
+  public static final double kMotorKs = 0.11995;
+  public static final double kMotorKv = 0.17088;
 
   /** Sim values for PID */
-  public static final double kSimKp = 0.0;
+  public static final double kSimKp = 1.0;
 
   public static final double kSimKi = 0.0;
-  public static final double kSimKd = 0.0;
+  public static final double kSimKd = 1.0;
 
-  public static final double kSimKs = 0.2;
-  public static final double kSimKv = 0.2;
+  public static final double kSimKs = 0.01957;
+  public static final double kSimKv = 0.21234;
 
   public static final DCMotor kGearbox = DCMotor.getNEO(2);
   public static final double kRobotMassKg = 35;
@@ -57,4 +59,19 @@ public class DriveConstants {
 
   /** Open Loop Scalar from Driver Controller Inputs */
   public static final double kOpenLoopVoltageScalar = 6.0;
+
+  public static final RobotConfig ppConfig =
+      new RobotConfig(
+          kRobotMassKg,
+          kRobotMOI,
+          new ModuleConfig(
+              kWheelRadiusMeters,
+              kMaxSpeed,
+              kWheelCOF,
+              kGearbox.withReduction(kMotorReduction),
+              kCurrentLimit,
+              2),
+          kTrackWidthMeters);
 }
+
+// Look at this please

@@ -24,13 +24,13 @@ import java.util.function.DoubleSupplier;
  * can be easily adapted for a brushed motor. One or more Spark Flexes can be used by swapping
  * relevant instances of "SparkMax" with "SparkFlex".
  */
-public class SuperstructureIOSpark implements SuperstructureIO {
+public class SuperstructureIOSparkCIM implements SuperstructureIO {
   private final SparkMax feeder = new SparkMax(feederCanId, MotorType.kBrushed);
   private final SparkMax intakeLauncher = new SparkMax(intakeLauncherCanId, MotorType.kBrushed);
   private final RelativeEncoder feederEncoder = feeder.getEncoder();
   private final RelativeEncoder intakeLauncherEncoder = intakeLauncher.getEncoder();
 
-  public SuperstructureIOSpark() {
+  public SuperstructureIOSparkCIM() {
     var feederConfig = new SparkMaxConfig();
     feederConfig
         .idleMode(IdleMode.kBrake)

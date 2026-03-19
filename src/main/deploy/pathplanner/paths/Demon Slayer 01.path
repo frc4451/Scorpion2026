@@ -1,0 +1,86 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.133975903614458,
+        "y": 4.00221686746988
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.3143975903614455,
+        "y": 4.035
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.4239036144578311,
+        "y": 6.0
+      },
+      "prevControl": {
+        "x": 0.45007716675873266,
+        "y": 4.855501065833926
+      },
+      "nextControl": {
+        "x": 0.3911204819277106,
+        "y": 7.433518072289157
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.133975903614458,
+        "y": 4.450253012048193
+      },
+      "prevControl": {
+        "x": 2.369074575958046,
+        "y": 4.4003681428532095
+      },
+      "nextControl": {
+        "x": 3.636650602409639,
+        "y": 4.483036144578313
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.133975903614458,
+        "y": 4.00221686746988
+      },
+      "prevControl": {
+        "x": 3.7459277108433735,
+        "y": 3.947578313253013
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Demon Slayer - Shooting"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 52.92692668268957
+  },
+  "reversed": false,
+  "folder": "Demon Slayer",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

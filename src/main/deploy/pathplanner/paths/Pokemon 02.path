@@ -1,0 +1,86 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.815378031383736,
+        "y": 7.4572753209700435
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.815378031383736,
+        "y": 7.4572753209700435
+      },
+      "isLocked": false,
+      "linkedName": "Pokemon - Under Trench"
+    },
+    {
+      "anchor": {
+        "x": 7.6580481927710835,
+        "y": 6.286108433734939
+      },
+      "prevControl": {
+        "x": 7.6580481927710835,
+        "y": 7.515900796721627
+      },
+      "nextControl": {
+        "x": 7.6580481927710835,
+        "y": 5.062204819277108
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.67990361445783,
+        "y": 4.351903614457831
+      },
+      "prevControl": {
+        "x": 7.690831325301204,
+        "y": 4.778084337349397
+      },
+      "nextControl": {
+        "x": 7.668975903614456,
+        "y": 3.9257228915662656
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.936819277108433,
+        "y": 4.351903614457831
+      },
+      "prevControl": {
+        "x": 6.936819277108433,
+        "y": 3.902669688059694
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Pokemon - Balls"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Rooster Fighter",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

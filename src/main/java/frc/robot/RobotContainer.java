@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.controllers.CommandCustomXboxController;
@@ -17,16 +19,22 @@ import frc.robot.subsystems.drive.GyroIOPigeon1;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureIO;
 import frc.robot.subsystems.superstructure.SuperstructureIOSim;
-import frc.robot.subsystems.superstructure.SuperstructureIOSpark;
+import frc.robot.subsystems.superstructure.SuperstructureIOSparkNEO;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
-  private final CommandCustomXboxController controller =
+  private final CommandCustomXboxController driveController =
       new CommandCustomXboxController(ControllerConstants.kDriverControllerPort);
+  private final CommandCustomXboxController opController =
+      new CommandCustomXboxController(ControllerConstants.kOperaterControllerPort);
 
   private final DriveSubsystem driveSubsystem;
   private final Superstructure superstructure;
 
+  private final LoggedDashboardChooser<Command> autoChooser;
+
   public RobotContainer() {
+
     DriveIO driveIO;
     GyroIO gyroIO;
     SuperstructureIO superstructureIO;
@@ -36,7 +44,7 @@ public class RobotContainer {
       case REAL:
         driveIO = new DriveIOSpark();
         gyroIO = new GyroIOPigeon1();
-        superstructureIO = new SuperstructureIOSpark();
+        superstructureIO = new SuperstructureIOSparkNEO();
         break;
 
       case SIM:
@@ -57,21 +65,51 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystem(driveIO, gyroIO);
     superstructure = new Superstructure(superstructureIO);
     configureBindings();
+
+    autoChooser =
+        new LoggedDashboardChooser<Command>("Auto Choices", AutoBuilder.buildAutoChooser());
+    configureAutos();
+
+    NamedCommands.registerCommand("Launch", superstructure.autoLaunch(2.5));
+    NamedCommands.registerCommand("Eject", superstructure.eject());
+    NamedCommands.registerCommand("Intake", superstructure.intake());
   }
+
+  private void configureAutos() {
+    Command SimpleAuto = AutoBuilder.buildAuto("Simple.auto");
+    Command PokemonAuto = AutoBuilder.buildAuto("Pokemon.auto");
+
+    autoChooser.addOption(
+        "Sit and Shoot",
+        Commands.sequence(Commands.deadline(Commands.waitSeconds(10), superstructure.launch())));
+    autoChooser.addOption(
+        "Feed Forward Characterization", driveSubsystem.feedforwardCharacterization());
+    autoChooser.addOption("Simple", SimpleAuto);
+    autoChooser.addOption("Pokemon", PokemonAuto);
+  }
+
+  // public Command getAutonomousPath() {
+  //   PathPlannerPath path = PathPlannerPath.fromPathFile("Backwards");
+  //   return new SequentialCommandGroup(
+  //       new InstantCommand(() -> driveSubsystem.setPose(path.getStartingHolonomicPose())));
+  //   AutoBuilder.followPath(path);
+  // }
 
   private void configureBindings() {
     driveSubsystem.setDefaultCommand(
-        driveSubsystem.driveCommand(() -> -controller.getLeftY(), () -> -controller.getRightX())
+        driveSubsystem.driveCommand(
+            () -> -driveController.getLeftY(), () -> -driveController.getRightX())
         // driveSubsystem.setDrivetrainArcadeDrive(
         //     () -> -controller.getLeftY(), () -> -controller.getRightX())
         );
 
-    controller.a().whileTrue(superstructure.intake());
-    controller.b().whileTrue(superstructure.eject());
-    controller.x().whileTrue(superstructure.launch());
+    driveController.rightTrigger().whileTrue(superstructure.intake());
+    opController.leftTrigger().whileTrue(superstructure.eject());
+    opController.rightTrigger().whileTrue(superstructure.launch());
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.get();
   }
 }
+// EVERYTHING COMMENTED IS WHAT WE ATTEMPTED TO DO - EXCLUDING LINE 42

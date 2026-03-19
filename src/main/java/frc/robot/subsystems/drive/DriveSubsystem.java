@@ -1,5 +1,10 @@
 package frc.robot.subsystems.drive;
 
+import static frc.robot.subsystems.drive.DriveConstants.FF_RAMP_RATE;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPLTVController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -8,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,6 +21,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -45,6 +55,51 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem(DriveIO driveIO, GyroIO gyroIO) {
     this.driveIO = driveIO;
     this.gyroIO = gyroIO;
+
+    // Load the RobotConfig from the GUI settings. You should probably
+    // store this in your Constants file
+    RobotConfig config;
+    try {
+      config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+    // }
+
+    // public void driveRobotRelative(ChassisSpeeds speeds) {
+    //   var moduleStates = kinematics.toSwerveModuleStates(speeds);
+    //   SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, kMaxSpeed);
+
+    //   frontLeft.
+    // }
+
+    //   // Configure AutoBuilder last
+    AutoBuilder.configure(
+        this::getPose, // Robot pose supplier
+        this::resetPose, // Method to reset odometry (will be called if your auto has a starting
+        this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        (speeds, feedforwards) ->
+            runClosedLoop(
+                speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
+        // Also optionally outputs individual module feedforwards
+        new PPLTVController(
+            0.02), // PPLTVController is the built in path following controller for differential
+        // drive trains
+        DriveConstants.ppConfig, // The robot configuration
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this // Reference to this subsystem to set requirements
+        );
   }
 
   @Override
@@ -74,9 +129,8 @@ public class DriveSubsystem extends SubsystemBase {
       rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
       lastLeftPositionMeters = getLeftPositionMeters();
       lastRightPositionMeters = getRightPositionMeters();
-
-      poseEstimator.update(rawGyroRotation, getLeftPositionMeters(), getRightPositionMeters());
     }
+    poseEstimator.update(rawGyroRotation, getLeftPositionMeters(), getRightPositionMeters());
   }
 
   @AutoLogOutput
@@ -94,7 +148,7 @@ public class DriveSubsystem extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
-  public void setPose(Pose2d pose) {
+  public void resetPose(Pose2d pose) {
     poseEstimator.resetPose(pose);
   }
 
@@ -179,4 +233,62 @@ public class DriveSubsystem extends SubsystemBase {
               0);
         });
   }
+
+  public void runOpenLoop(double leftVolts, double rightVolts) {
+    this.driveIO.setVoltage(leftVolts, rightVolts);
+  }
+
+  public double getCharacterizationVelocity() {
+    return (driveIOInputs.leftVelocityRadPerSec + driveIOInputs.rightVelocityRadPerSec) / 2.0;
+  }
+
+  public Command feedforwardCharacterization() {
+    List<Double> velocitySamples = new LinkedList<>();
+    List<Double> voltageSamples = new LinkedList<>();
+    Timer timer = new Timer();
+
+    return Commands.sequence(
+        Commands.runOnce(
+            () -> {
+              velocitySamples.clear();
+              voltageSamples.clear();
+              timer.restart();
+              // timer.start();
+            }),
+        Commands.run(
+                () -> {
+                  double voltage = timer.get() * FF_RAMP_RATE;
+                  // driveIO.setVoltage(voltage, voltage);
+                  this.runOpenLoop(voltage, voltage);
+                  velocitySamples.add(this.getCharacterizationVelocity());
+                  voltageSamples.add(voltage);
+                  Logger.recordOutput("DriveFeedFoward", voltage);
+                },
+                this)
+            .finallyDo(
+                () -> {
+                  int n = velocitySamples.size();
+                  double sumX = 0.0;
+                  double sumY = 0.0;
+                  double sumXY = 0.0;
+                  double sumX2 = 0.0;
+                  for (int i = 0; i < n; i++) {
+                    sumX += velocitySamples.get(i);
+                    sumY += voltageSamples.get(i);
+                    sumXY += velocitySamples.get(i) * voltageSamples.get(i);
+                    sumX2 += velocitySamples.get(i) * velocitySamples.get(i);
+                  }
+                  double kS = (sumY * sumX2 - sumX * sumXY) / (n * sumX2 - sumX * sumX);
+                  double kV = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+
+                  NumberFormat formatter = new DecimalFormat("#0.00000");
+                  System.out.println("********** Drive FF Characterization Results **********");
+                  System.out.println("\tkS: " + formatter.format(kS));
+                  System.out.println("\tkV: " + formatter.format(kV));
+                }));
+  }
+
+  /* public Command goFowardOneFoot() {
+
+  } */
 }
