@@ -64,6 +64,8 @@ public class Superstructure extends SubsystemBase {
     return run(() -> {
           io.setFeederVoltage(spinUpFeederVoltage);
           io.setIntakeLauncherVoltage(launchingLauncherVoltage);
+          
+          // io.setAngularVelocity(-spinUpSeconds);
         })
         .withTimeout(spinUpSeconds)
         .andThen(

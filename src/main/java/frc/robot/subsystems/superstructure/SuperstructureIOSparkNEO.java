@@ -63,6 +63,7 @@ public class SuperstructureIOSparkNEO implements SuperstructureIO {
         .velocityConversionFactor((2.0 * Math.PI) / 60.0 / intakeLauncherMotorReduction)
         .uvwMeasurementPeriod(10)
         .uvwAverageDepth(2);
+    intakeLauncherConfig.closedLoop.pid(kLauncherKp, kLauncherKi, kLauncherKd);
     tryUntilOk(
         intakeLauncher,
         5,
@@ -108,5 +109,10 @@ public class SuperstructureIOSparkNEO implements SuperstructureIO {
   @Override
   public void setIntakeLauncherVoltage(double volts) {
     intakeLauncher.setVoltage(volts);
+  }
+
+  @Override
+  public void setAngularVelocity(double AngularVelocity) {
+    intakeLauncher.set(AngularVelocity);
   }
 }

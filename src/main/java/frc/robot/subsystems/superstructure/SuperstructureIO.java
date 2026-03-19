@@ -23,12 +23,15 @@ public interface SuperstructureIO {
     public double intakeLauncherCurrentAmps = 0.0;
   }
 
-  /** Update the set of loggable inputs. */
+  // Update the set of loggable inputs.
   public default void updateInputs(SuperstructureIOInputs inputs) {}
 
-  /** Run the feeder at the specified voltage. */
+  // Run the feeder at the specified voltage.
   public default void setFeederVoltage(double volts) {}
 
-  /** Run the intake and launcher at the specified voltage. */
+  // Run the intake and launcher at the specified voltage.
   public default void setIntakeLauncherVoltage(double volts) {}
+
+  // For shooter velocity
+  public default void setAngularVelocity(double AngularVelocity) {}
 }
