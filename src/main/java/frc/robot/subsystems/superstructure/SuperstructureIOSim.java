@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems.superstructure;
 
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.*;
 
 import edu.wpi.first.math.MathUtil;
@@ -41,7 +43,9 @@ public class SuperstructureIOSim implements SuperstructureIO {
     inputs.feederCurrentAmps = feederSim.getCurrentDrawAmps();
 
     inputs.intakeLauncherPositionRad = intakeLauncherSim.getAngularPositionRad();
-    inputs.intakeLauncherVelocityRadPerSec = intakeLauncherSim.getAngularVelocityRadPerSec();
+    inputs.intakeLauncherVelocityRPM =
+        RadiansPerSecond.of(intakeLauncherSim.getAngularVelocityRadPerSec()).in(RotationsPerSecond)
+            * 60.0;
     inputs.intakeLauncherAppliedVolts = intakeLauncherAppliedVolts;
     inputs.intakeLauncherCurrentAmps = intakeLauncherSim.getCurrentDrawAmps();
   }

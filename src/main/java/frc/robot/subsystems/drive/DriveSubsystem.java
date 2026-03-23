@@ -202,7 +202,7 @@ public class DriveSubsystem extends SubsystemBase {
           DifferentialDrive.curvatureDriveIK(
               forward * Math.abs(forward), rotation * Math.abs(rotation) / 1.4, false);
     } else {
-      speeds = DifferentialDrive.arcadeDriveIK(0, rotation / 2, true);
+      speeds = DifferentialDrive.arcadeDriveIK(0, rotation / 1.5, true);
     }
     Logger.recordOutput("DriveSubsystem/Setpoint/inputtedX", forward);
     runClosedLoop(speeds.left * DriveConstants.kMaxSpeed, speeds.right * DriveConstants.kMaxSpeed);

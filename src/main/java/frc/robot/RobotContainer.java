@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.RPM;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -76,8 +78,8 @@ public class RobotContainer {
   }
 
   private void configureAutos() {
-    Command SimpleAuto = AutoBuilder.buildAuto("Simple.auto");
-    Command PokemonAuto = AutoBuilder.buildAuto("Pokemon.auto");
+    Command SimpleAuto = AutoBuilder.buildAuto("Simple");
+    Command PokemonAuto = AutoBuilder.buildAuto("Pokemon");
 
     autoChooser.addOption(
         "Sit and Shoot",
@@ -106,6 +108,8 @@ public class RobotContainer {
     driveController.rightTrigger().whileTrue(superstructure.intake());
     opController.leftTrigger().whileTrue(superstructure.eject());
     opController.rightTrigger().whileTrue(superstructure.launch());
+
+    opController.a().whileTrue(superstructure.setRPSLauncherCommand(RPM.of(2800)));
   }
 
   public Command getAutonomousCommand() {

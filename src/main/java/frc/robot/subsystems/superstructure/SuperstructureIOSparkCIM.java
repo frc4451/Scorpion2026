@@ -38,8 +38,7 @@ public class SuperstructureIOSparkCIM implements SuperstructureIO {
         .voltageCompensation(12.0);
     feederConfig
         .encoder
-        .positionConversionFactor(
-            2.0 * Math.PI / feederMotorReduction) // Rotor Rotations -> Roller Radians
+        .positionConversionFactor(intakeLauncherMotorReduction) // Rotor Rotations
         .velocityConversionFactor((2.0 * Math.PI) / 60.0 / feederMotorReduction)
         .uvwMeasurementPeriod(10)
         .uvwAverageDepth(2);
@@ -58,9 +57,8 @@ public class SuperstructureIOSparkCIM implements SuperstructureIO {
         .voltageCompensation(12.0);
     intakeLauncherConfig
         .encoder
-        .positionConversionFactor(
-            2.0 * Math.PI / intakeLauncherMotorReduction) // Rotor Rotations -> Roller Radians
-        .velocityConversionFactor((2.0 * Math.PI) / 60.0 / intakeLauncherMotorReduction)
+        .positionConversionFactor(intakeLauncherMotorReduction) // Rotor Rotations
+        .velocityConversionFactor(60.0 / intakeLauncherMotorReduction)
         .uvwMeasurementPeriod(10)
         .uvwAverageDepth(2);
     tryUntilOk(
@@ -89,7 +87,7 @@ public class SuperstructureIOSparkCIM implements SuperstructureIO {
     ifOk(
         intakeLauncher,
         intakeLauncherEncoder::getVelocity,
-        (value) -> inputs.intakeLauncherVelocityRadPerSec = value);
+        (value) -> inputs.intakeLauncherVelocityRPM = value);
     ifOk(
         intakeLauncher,
         new DoubleSupplier[] {intakeLauncher::getAppliedOutput, intakeLauncher::getBusVoltage},

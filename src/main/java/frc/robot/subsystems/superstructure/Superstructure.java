@@ -7,21 +7,26 @@
 
 package frc.robot.subsystems.superstructure;
 
+import static edu.wpi.first.units.Units.RPM;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.intakingFeederVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.intakingIntakeVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.launchingFeederVoltage;
-import static frc.robot.subsystems.superstructure.SuperstructureConstants.launchingLauncherVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUpFeederVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUpSeconds;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class Superstructure extends SubsystemBase {
   private final SuperstructureIO io;
   private final SuperstructureIOInputsAutoLogged inputs = new SuperstructureIOInputsAutoLogged();
+
+  private final LoggedTunableNumber tunableRPM =
+      new LoggedTunableNumber(getName() + "/IntakeLauncherRPM", 0.0);
 
   public Superstructure(SuperstructureIO io) {
     this.io = io;
@@ -63,8 +68,8 @@ public class Superstructure extends SubsystemBase {
   public Command launch() {
     return run(() -> {
           io.setFeederVoltage(spinUpFeederVoltage);
-          io.setIntakeLauncherVoltage(launchingLauncherVoltage);
-          
+          io.setIntakeLauncherVelocity(RPM.of(tunableRPM.get()));
+
           // io.setAngularVelocity(-spinUpSeconds);
         })
         .withTimeout(spinUpSeconds)
@@ -72,7 +77,8 @@ public class Superstructure extends SubsystemBase {
             run(
                 () -> {
                   io.setFeederVoltage(launchingFeederVoltage);
-                  io.setIntakeLauncherVoltage(launchingLauncherVoltage);
+                  io.setIntakeLauncherVelocity(RPM.of(tunableRPM.get()));
+                  // io.setIntakeLauncherVoltage(launchingLauncherVoltage);
                 }))
         .finallyDo(
             () -> {
@@ -83,5 +89,13 @@ public class Superstructure extends SubsystemBase {
 
   public Command autoLaunch(double time) {
     return Commands.deadline(Commands.waitSeconds(time), launch());
+  }
+
+  public Command setRPSLauncherCommand(AngularVelocity velocity) {
+    return run(
+        () -> {
+          io.setIntakeLauncherVelocity(RPM.of(tunableRPM.get()));
+          Logger.recordOutput(getName() + "/SetShooterVelocity", RPM.of(tunableRPM.get()));
+        });
   }
 }

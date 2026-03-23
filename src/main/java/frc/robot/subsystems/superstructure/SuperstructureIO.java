@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems.superstructure;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface SuperstructureIO {
@@ -18,7 +19,7 @@ public interface SuperstructureIO {
     public double feederCurrentAmps = 0.0;
 
     public double intakeLauncherPositionRad = 0.0;
-    public double intakeLauncherVelocityRadPerSec = 0.0;
+    public double intakeLauncherVelocityRPM = 0.0;
     public double intakeLauncherAppliedVolts = 0.0;
     public double intakeLauncherCurrentAmps = 0.0;
   }
@@ -33,5 +34,5 @@ public interface SuperstructureIO {
   public default void setIntakeLauncherVoltage(double volts) {}
 
   // For shooter velocity
-  public default void setAngularVelocity(double AngularVelocity) {}
+  public default void setIntakeLauncherVelocity(AngularVelocity velocity) {}
 }

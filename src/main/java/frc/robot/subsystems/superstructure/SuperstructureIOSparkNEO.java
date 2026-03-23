@@ -7,16 +7,20 @@
 
 package frc.robot.subsystems.superstructure;
 
+import static edu.wpi.first.units.Units.RPM;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.*;
 import static frc.robot.util.SparkUtil.*;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.units.measure.AngularVelocity;
 import java.util.function.DoubleSupplier;
 
 /**
@@ -29,6 +33,9 @@ public class SuperstructureIOSparkNEO implements SuperstructureIO {
   private final SparkMax intakeLauncher = new SparkMax(intakeLauncherCanId, MotorType.kBrushless);
   private final RelativeEncoder feederEncoder = feeder.getEncoder();
   private final RelativeEncoder intakeLauncherEncoder = intakeLauncher.getEncoder();
+
+  private final SparkClosedLoopController intakeLauncherController =
+      intakeLauncher.getClosedLoopController();
 
   public SuperstructureIOSparkNEO() {
     var feederConfig = new SparkMaxConfig();
@@ -58,12 +65,12 @@ public class SuperstructureIOSparkNEO implements SuperstructureIO {
         .voltageCompensation(12.0);
     intakeLauncherConfig
         .encoder
-        .positionConversionFactor(
-            2.0 * Math.PI / intakeLauncherMotorReduction) // Rotor Rotations -> Roller Radians
-        .velocityConversionFactor((2.0 * Math.PI) / 60.0 / intakeLauncherMotorReduction)
+        .positionConversionFactor(intakeLauncherMotorReduction) // Rotor Rotations -> Roller Radians
+        .velocityConversionFactor(1)
         .uvwMeasurementPeriod(10)
         .uvwAverageDepth(2);
     intakeLauncherConfig.closedLoop.pid(kLauncherKp, kLauncherKi, kLauncherKd);
+    intakeLauncherConfig.closedLoop.feedForward.kV(0.0002);
     tryUntilOk(
         intakeLauncher,
         5,
@@ -90,7 +97,7 @@ public class SuperstructureIOSparkNEO implements SuperstructureIO {
     ifOk(
         intakeLauncher,
         intakeLauncherEncoder::getVelocity,
-        (value) -> inputs.intakeLauncherVelocityRadPerSec = value);
+        (value) -> inputs.intakeLauncherVelocityRPM = value);
     ifOk(
         intakeLauncher,
         new DoubleSupplier[] {intakeLauncher::getAppliedOutput, intakeLauncher::getBusVoltage},
@@ -112,7 +119,7 @@ public class SuperstructureIOSparkNEO implements SuperstructureIO {
   }
 
   @Override
-  public void setAngularVelocity(double AngularVelocity) {
-    intakeLauncher.set(AngularVelocity);
+  public void setIntakeLauncherVelocity(AngularVelocity velocity) {
+    intakeLauncherController.setSetpoint(velocity.in(RPM), ControlType.kVelocity);
   }
 }
