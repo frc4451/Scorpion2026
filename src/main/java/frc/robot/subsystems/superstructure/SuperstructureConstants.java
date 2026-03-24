@@ -19,6 +19,7 @@ public class SuperstructureConstants {
   public static final double kLauncherKp = 0.00025;
   public static final double kLauncherKi = 0.0;
   public static final double kLauncherKd = 0.0;
+  public static final double kLauncherKV = 0.0001735;
 
   public static final double intakingFeederVoltage = 6.0;
   public static final double intakingIntakeVoltage = -4.0;
