@@ -11,6 +11,6 @@ public class LaunchCalculator {
       new LoggedTunableNumber("Interpolation Test/Manual Feet From Hub", 6.0);
 
   static {
-    distanceToRPM.put(Units.feetToMeters(6), 7000);
+    distanceToRPM.put(Units.feetToMeters(8), -3200.0);
   }
 }

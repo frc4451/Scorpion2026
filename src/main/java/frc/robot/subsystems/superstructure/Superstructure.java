@@ -26,7 +26,7 @@ public class Superstructure extends SubsystemBase {
   private final SuperstructureIOInputsAutoLogged inputs = new SuperstructureIOInputsAutoLogged();
 
   private final LoggedTunableNumber tunableRPM =
-      new LoggedTunableNumber(getName() + "/IntakeLauncherRPM", 0.0);
+      new LoggedTunableNumber(getName() + "/IntakeLauncherRPM", 3000.0);
 
   public Superstructure(SuperstructureIO io) {
     this.io = io;

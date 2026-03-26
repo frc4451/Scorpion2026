@@ -1,23 +1,10 @@
 package frc.robot.bobot_state;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.bobot_state.varc.BargeTagTracker;
-import frc.robot.bobot_state.varc.HPSTagTracker;
-import frc.robot.bobot_state.varc.ReefTagTracker;
-import frc.robot.bobot_state.varc.TargetAngleTracker;
-import frc.robot.field.FieldConstants;
-import frc.robot.field.FieldUtils;
-import frc.robot.subsystems.quest.TimestampedPose;
 import frc.robot.subsystems.vision.PoseObservation;
-import frc.robot.util.PoseUtils;
 import frc.robot.util.VirtualSubsystem;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * Class full of static variables and methods that store robot state we'd need across mulitple
@@ -31,20 +18,18 @@ public class BobotState extends VirtualSubsystem {
       new LinkedBlockingQueue<>(20);
   private static final Queue<PoseObservation> constrainedPoseObservations =
       new LinkedBlockingQueue<>(20);
-  private static final Queue<TimestampedPose> questMeasurements = new LinkedBlockingQueue<>(20);
 
   private static Pose2d globalPose = new Pose2d();
   private static Pose2d constrainedPose = new Pose2d();
-  private static Pose2d questPose = new Pose2d();
 
-  public static final ReefTagTracker reefTracker = new ReefTagTracker();
-  public static final HPSTagTracker hpsTracker = new HPSTagTracker();
-  public static final BargeTagTracker bargeTracker = new BargeTagTracker();
+  // public static final ReefTagTracker reefTracker = new ReefTagTracker();
+  // public static final HPSTagTracker hpsTracker = new HPSTagTracker();
+  // public static final BargeTagTracker bargeTracker = new BargeTagTracker();
 
   public static boolean climbMode = false;
 
-  private static List<TargetAngleTracker> autoAlignmentTrackers =
-      List.of(BobotState.hpsTracker, BobotState.reefTracker);
+  // private static List<TargetAngleTracker> autoAlignmentTrackers =
+  //     List.of(BobotState.hpsTracker, BobotState.reefTracker);
 
   public static void offerGlobalVisionObservation(PoseObservation observation) {
     BobotState.globalPoseObservations.offer(observation);
@@ -62,24 +47,12 @@ public class BobotState extends VirtualSubsystem {
     return BobotState.constrainedPoseObservations;
   }
 
-  public static void offerQuestMeasurement(TimestampedPose observation) {
-    BobotState.questMeasurements.offer(observation);
-  }
-
-  public static Queue<TimestampedPose> getQuestMeasurments() {
-    return BobotState.questMeasurements;
-  }
-
   public static void updateGlobalPose(Pose2d pose) {
     BobotState.globalPose = pose;
   }
 
   public static void updateConstrainedPose(Pose2d pose) {
     BobotState.constrainedPose = pose;
-  }
-
-  public static void updateQuestPose(Pose2d pose) {
-    BobotState.questPose = pose;
   }
 
   public static Pose2d getGlobalPose() {
@@ -89,104 +62,96 @@ public class BobotState extends VirtualSubsystem {
   public static Pose2d getConstrainedPose() {
     return BobotState.constrainedPose;
   }
+  
+  public void periodic() {}
+  // public static Trigger onTeamSide() {
+  //   return new Trigger(
+  //       () ->
+  //           FieldUtils.getAlliance() == Alliance.Blue
+  //               ? getGlobalPose().getX()
+  //                   < (FieldConstants.fieldLength + FieldConstants.bargeLength) / 2.0
+  //               : getGlobalPose().getX()
+  //                   > (FieldConstants.fieldLength - FieldConstants.bargeLength) / 2.0);
+  // }
 
-  public static Pose2d getQuestPose() {
-    return BobotState.questPose;
-  }
+  // public static Rotation2d getRotationToClosestReef() {
+  //   return BobotState.reefTracker.getRotationTarget();
+  // }
 
-  public static Trigger onTeamSide() {
-    return new Trigger(
-        () ->
-            FieldUtils.getAlliance() == Alliance.Blue
-                ? getGlobalPose().getX()
-                    < (FieldConstants.fieldLength + FieldConstants.bargeLength) / 2.0
-                : getGlobalPose().getX()
-                    > (FieldConstants.fieldLength - FieldConstants.bargeLength) / 2.0);
-  }
+  // public static Rotation2d getRotationToClosestHPS() {
+  //   return BobotState.hpsTracker.getRotationTarget();
+  // }
 
-  public static Rotation2d getRotationToClosestReef() {
-    return BobotState.reefTracker.getRotationTarget();
-  }
+  // public static Rotation2d getRotationToClosestBarge() {
+  //   return BobotState.bargeTracker.getRotationTarget();
+  // }
 
-  public static Rotation2d getRotationToClosestHPS() {
-    return BobotState.hpsTracker.getRotationTarget();
-  }
+  // public static double getDistanceMetersFromClosestHPS() {
+  //   return BobotState.hpsTracker.getDistanceMeters();
+  // }
 
-  public static Rotation2d getRotationToClosestBarge() {
-    return BobotState.bargeTracker.getRotationTarget();
-  }
+  // public static Trigger humanPlayerShouldThrow() {
+  //   return new Trigger(
+  //       () ->
+  //           PoseUtils.getPerpendicularError(
+  //                   BobotState.getGlobalPose(), FieldUtils.getClosestHPS().center)
+  //               < 0.5);
+  // }
 
-  public static double getDistanceMetersFromClosestHPS() {
-    return BobotState.hpsTracker.getDistanceMeters();
-  }
+  // public static TargetAngleTracker getCurrentAlignmentTracker() {
+  //   return climbMode
+  //       ? bargeTracker
+  //       : autoAlignmentTrackers.stream()
+  //           .reduce((a, b) -> a.getDistanceMeters() < b.getDistanceMeters() ? a : b)
+  //           .get();
+  // }
 
-  public static Trigger humanPlayerShouldThrow() {
-    return new Trigger(
-        () ->
-            PoseUtils.getPerpendicularError(
-                    BobotState.getGlobalPose(), FieldUtils.getClosestHPS().center)
-                < 0.5);
-  }
+  // @Override
+  // public void periodic() {
+  //   Logger.recordOutput(logRoot + "ClimberMode", climbMode);
 
-  public static TargetAngleTracker getCurrentAlignmentTracker() {
-    return climbMode
-        ? bargeTracker
-        : autoAlignmentTrackers.stream()
-            .reduce((a, b) -> a.getDistanceMeters() < b.getDistanceMeters() ? a : b)
-            .get();
-  }
+  //   {
+  //     reefTracker.update();
 
-  @Override
-  public void periodic() {
-    Logger.recordOutput(logRoot + "ClimberMode", climbMode);
+  //     String calcLogRoot = logRoot + "Reef/";
+  //     Logger.recordOutput(calcLogRoot + "ClosestTag", FieldUtil.getClosestReef().tag);
+  //     Logger.recordOutput(
+  //         calcLogRoot + "TargetAngleDeg", reefTracker.getRotationTarget().getDegrees());
+  //     Logger.recordOutput(
+  //         calcLogRoot + "TargetAngleRad", reefTracker.getRotationTarget().getRadians());
+  //     Logger.recordOutput(calcLogRoot + "Left Pole", FieldUtil.getClosestReef().leftPole);
+  //     Logger.recordOutput(calcLogRoot + "Right Pole", FieldUtil.getClosestReef().rightPole);
+  //   }
 
-    {
-      TimestampedPose[] questPoses = getQuestMeasurments().stream().toArray(TimestampedPose[]::new);
-      Logger.recordOutput(logRoot + "Quest/Measurements", questPoses);
-    }
+  //   {
+  //     hpsTracker.update();
 
-    {
-      reefTracker.update();
+  //     String calcLogRoot = logRoot + "HPS/";
+  //     Logger.recordOutput(calcLogRoot + "Closest Tag", FieldUtils.getClosestHPS().tag);
+  //     Logger.recordOutput(calcLogRoot + "Distance", BobotState.hpsTracker.getDistanceMeters());
+  //     Logger.recordOutput(
+  //         calcLogRoot + "TargetAngleDeg", hpsTracker.getRotationTarget().getDegrees());
+  //     Logger.recordOutput(
+  //         calcLogRoot + "TargetAngleRad", hpsTracker.getRotationTarget().getRadians());
+  //   }
 
-      String calcLogRoot = logRoot + "Reef/";
-      Logger.recordOutput(calcLogRoot + "ClosestTag", FieldUtils.getClosestReef().tag);
-      Logger.recordOutput(
-          calcLogRoot + "TargetAngleDeg", reefTracker.getRotationTarget().getDegrees());
-      Logger.recordOutput(
-          calcLogRoot + "TargetAngleRad", reefTracker.getRotationTarget().getRadians());
-      Logger.recordOutput(calcLogRoot + "Left Pole", FieldUtils.getClosestReef().leftPole);
-      Logger.recordOutput(calcLogRoot + "Right Pole", FieldUtils.getClosestReef().rightPole);
-    }
+  //   {
+  //     bargeTracker.update();
 
-    {
-      hpsTracker.update();
+  //     String calcLogRoot = logRoot + "Barge/";
+  //     Logger.recordOutput(
+  //         calcLogRoot + "TargetAngleDeg", hpsTracker.getRotationTarget().getDegrees());
+  //     Logger.recordOutput(
+  //         calcLogRoot + "TargetAngleRad", hpsTracker.getRotationTarget().getRadians());
+  //   }
 
-      String calcLogRoot = logRoot + "HPS/";
-      Logger.recordOutput(calcLogRoot + "Closest Tag", FieldUtils.getClosestHPS().tag);
-      Logger.recordOutput(calcLogRoot + "Distance", BobotState.hpsTracker.getDistanceMeters());
-      Logger.recordOutput(
-          calcLogRoot + "TargetAngleDeg", hpsTracker.getRotationTarget().getDegrees());
-      Logger.recordOutput(
-          calcLogRoot + "TargetAngleRad", hpsTracker.getRotationTarget().getRadians());
-    }
-
-    {
-      bargeTracker.update();
-
-      String calcLogRoot = logRoot + "Barge/";
-      Logger.recordOutput(
-          calcLogRoot + "TargetAngleDeg", hpsTracker.getRotationTarget().getDegrees());
-      Logger.recordOutput(
-          calcLogRoot + "TargetAngleRad", hpsTracker.getRotationTarget().getRadians());
-    }
-
-    {
-      String calcLogRoot = logRoot + "CurrentAlignment/";
-      Logger.recordOutput(calcLogRoot + "Enabled", onTeamSide().getAsBoolean());
-      Logger.recordOutput(
-          calcLogRoot + "Type", getCurrentAlignmentTracker().getClass().getSimpleName());
-    }
-  }
+  //   {
+  //     String calcLogRoot = logRoot + "CurrentAlignment/";
+  //     Logger.recordOutput(calcLogRoot + "Enabled", onTeamSide().getAsBoolean());
+  //     Logger.recordOutput(
+  //         calcLogRoot + "Type", getCurrentAlignmentTracker().getClass().getSimpleName());
+  //   }
+  // }
 
   @Override
   public void simulationPeriodic() {}

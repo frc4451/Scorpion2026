@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.robot.Constants;
 import frc.robot.bobot_state.BobotState;
 import frc.robot.subsystems.vision.VisionConstants.AprilTagCameraConfig;
-import frc.robot.subsystems.vision.VisionConstants.PoseEstimationMethod;
 import frc.robot.util.VirtualSubsystem;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,15 +31,10 @@ public class Vision extends VirtualSubsystem {
 
       switch (Constants.currentMode) {
         case REAL:
-          io =
-              new AprilTagIOPhoton(
-                  config.source());
+          io = new AprilTagIOPhoton(config.source());
           break;
         case SIM:
-          io =
-              new AprilTagIOPhotonSim(
-                  config.source(),
-                  config.simConfig());
+          io = new AprilTagIOPhotonSim(config.source(), config.simConfig());
           break;
         case REPLAY:
         default:
@@ -98,7 +92,7 @@ public class Vision extends VirtualSubsystem {
       rejectedAprilTagPoses.addAll(Arrays.asList(cam.inputs.rejectedAprilTagPoses));
 
       for (PoseObservation observation : cam.inputs.validPoseObservations) {
-          BobotState.offerGlobalVisionObservation(observation);
+        BobotState.offerGlobalVisionObservation(observation);
       }
     }
 
