@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.RPM;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.controllers.CommandCustomXboxController;
@@ -106,6 +107,12 @@ public class RobotContainer {
         );
 
     driveController.rightTrigger().whileTrue(superstructure.intake());
+
+    driveController
+        .a()
+        .whileTrue(
+            driveSubsystem.driveWithExactHeading(() -> Rotation2d.kCCW_90deg, () -> -driveController.getLeftY()));
+
     opController.leftTrigger().whileTrue(superstructure.eject());
     opController.rightTrigger().whileTrue(superstructure.launch());
 

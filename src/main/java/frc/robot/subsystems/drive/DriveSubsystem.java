@@ -5,6 +5,8 @@ import static frc.robot.subsystems.drive.DriveConstants.FF_RAMP_RATE;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPLTVController;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,6 +28,8 @@ import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -286,6 +290,37 @@ public class DriveSubsystem extends SubsystemBase {
                   System.out.println("\tkS: " + formatter.format(kS));
                   System.out.println("\tkV: " + formatter.format(kV));
                 }));
+  }
+
+  /**
+   * Drive forward robot-relative at an angle supplied by RobotContainer
+   * @param targetHeading Desired Robot Heading
+   * @param forward Y-forward controller input
+   */
+  public Command driveWithExactHeading(Supplier<Rotation2d> targetHeading, DoubleSupplier forward) {
+    PIDController headingPID = new PIDController(3.0, 0.0, 0.0);
+    headingPID.enableContinuousInput(-Math.PI, Math.PI);
+    headingPID.setTolerance(Math.toRadians(2.0));
+
+    double maxOmega = DriveConstants.kMaxSpeed / (DriveConstants.kTrackWidthMeters / 2.0);
+
+    return Commands.run(
+            () -> {
+              double omega =
+                  MathUtil.clamp(
+                      headingPID.calculate(
+                          getPose().getRotation().getRadians(), targetHeading.get().getRadians()),
+                      -maxOmega,
+                      maxOmega);
+              double vx = forward.getAsDouble() * DriveConstants.kMaxSpeed;
+              runClosedLoop(new ChassisSpeeds(vx, 0, omega));
+            },
+            this)
+        .finallyDo(
+            () -> {
+              runClosedLoop(new ChassisSpeeds());
+              headingPID.close();
+            });
   }
 
   /* public Command goFowardOneFoot() {
