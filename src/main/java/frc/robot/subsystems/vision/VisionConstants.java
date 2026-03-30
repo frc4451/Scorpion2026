@@ -28,27 +28,14 @@ public class VisionConstants {
   }
 
   public static final AprilTagFieldLayout fieldLayout =
-      AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+      AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
   public static final Optional<VisionSystemSim> aprilTagSim =
       Constants.currentMode == Mode.SIM
           ? Optional.of(new VisionSystemSim("AprilTagSim"))
           : Optional.empty();
 
-  private static final List<AprilTagCameraConfig> guidoConfigs =
-      List.of(
-          new AprilTagCameraConfig(
-              new VisionSource(
-                  "SillyCam",
-                  new Transform3d(
-                      new Translation3d(
-                          6.0 / 100.0, // forward+
-                          29.5 / 100.0, // left+
-                          26.5 / 100.0), // up+
-                      new Rotation3d(0, Units.degreesToRadians(-17.5), 0))),
-              SimCameraConfig.THRIFTY_CAM_90));
-
-  private static final List<AprilTagCameraConfig> riptideConfigs =
+  public static final List<AprilTagCameraConfig> aprilTagCamerasConfigs =
       List.of(
           // FLO
           new AprilTagCameraConfig(
@@ -98,8 +85,6 @@ public class VisionConstants {
                       new Rotation3d(
                           0, Units.degreesToRadians(-20.0), Units.degreesToRadians(-30)))),
               SimCameraConfig.THRIFTY_CAM_80));
-
-  public static final List<AprilTagCameraConfig> aprilTagCamerasConfigs = riptideConfigs;
 
   public static final double ambiguityCutoff = 0.05;
   public static final double singleTagPoseCutoffMeters = 4.0;

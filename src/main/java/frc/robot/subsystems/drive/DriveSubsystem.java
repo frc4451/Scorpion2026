@@ -23,13 +23,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.bobot_state.BobotState;
+import frc.robot.subsystems.vision.PoseObservation;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -135,6 +136,15 @@ public class DriveSubsystem extends SubsystemBase {
       lastRightPositionMeters = getRightPositionMeters();
     }
     poseEstimator.update(rawGyroRotation, getLeftPositionMeters(), getRightPositionMeters());
+
+    // Add Vision Measurements
+    PoseObservation globalObservation;
+    while ((globalObservation = BobotState.getGlobalVisionObservations().poll()) != null) {
+      poseEstimator.addVisionMeasurement(
+          globalObservation.robotPose().toPose2d(), globalObservation.timestampSeconds());
+    }
+
+    BobotState.updateGlobalPose(this.getPose());
   }
 
   @AutoLogOutput
@@ -294,6 +304,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Drive forward robot-relative at an angle supplied by RobotContainer
+   *
    * @param targetHeading Desired Robot Heading
    * @param forward Y-forward controller input
    */
