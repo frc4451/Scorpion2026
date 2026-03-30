@@ -21,7 +21,6 @@ public class SuperstructureIOSim implements SuperstructureIO {
   private final DCMotor intakeLauncherMotor = DCMotor.getNEO(1);
   private final DCMotor intakeFeederMotor = DCMotor.getNEO(1);
 
-
   private DCMotorSim feederSim =
       new DCMotorSim(
           LinearSystemId.createDCMotorSystem(intakeFeederMotor, 0.004, feederMotorReduction),
@@ -37,7 +36,7 @@ public class SuperstructureIOSim implements SuperstructureIO {
 
   private final PIDController intakeLauncherPID =
       new PIDController(kLauncherKp, kLauncherKi, kLauncherKd);
-      
+
   private boolean isClosedLoop = false;
   private double intakeLauncherSetpointRPM = 0.0;
 
@@ -49,8 +48,7 @@ public class SuperstructureIOSim implements SuperstructureIO {
       double currentRPM = intakeLauncherSim.getAngularVelocityRPM();
       double feedforward = kLauncherKV * intakeLauncherSetpointRPM * 12.0;
       intakeLauncherAppliedVolts =
-          MathUtil.clamp(
-              feedforward + intakeLauncherPID.calculate(currentRPM) * 12.0, -12.0, 12.0);
+          MathUtil.clamp(feedforward + intakeLauncherPID.calculate(currentRPM) * 12.0, -12.0, 12.0);
     }
     intakeLauncherSim.setInputVoltage(intakeLauncherAppliedVolts);
     intakeLauncherSim.update(0.02);

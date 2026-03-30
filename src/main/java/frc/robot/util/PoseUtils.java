@@ -3,6 +3,7 @@ package frc.robot.util;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 
 public class PoseUtils {
   public static Pose2d getParallelOffsetPose(Pose2d pose, double offsetMeters) {
@@ -43,5 +44,14 @@ public class PoseUtils {
     return perpendicularError;
 
     // return -origin.minus(target).getX();
+  }
+
+  public static Translation3d averageOfProvidedTranslations(Translation3d... translations) {
+    Translation3d average = Translation3d.kZero;
+
+    for (Translation3d pose : translations) {
+      average = average.plus(pose);
+    }
+    return average.div(translations.length);
   }
 }
