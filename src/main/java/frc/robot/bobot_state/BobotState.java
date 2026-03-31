@@ -62,7 +62,7 @@ public class BobotState extends VirtualSubsystem {
   public static Pose2d getConstrainedPose() {
     return BobotState.constrainedPose;
   }
-  
+
   public void periodic() {}
   // public static Trigger onTeamSide() {
   //   return new Trigger(

@@ -5,8 +5,11 @@
 package frc.robot;
 
 import com.revrobotics.util.StatusLogger;
+import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.vision.VisionConstants;
+import frc.robot.util.VirtualSubsystem;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -69,7 +72,10 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotPeriodic() {
+    Threads.setCurrentThreadPriority(true, 99);
+    VirtualSubsystem.runPeriodically();
     CommandScheduler.getInstance().run();
+    Threads.setCurrentThreadPriority(false, 10);
   }
 
   @Override
@@ -119,4 +125,15 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void testExit() {}
+
+  @Override
+  public void simulationInit() {
+    VisionConstants.aprilTagSim.ifPresent(
+        aprilTagSim -> aprilTagSim.addAprilTags(VisionConstants.fieldLayout));
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    VirtualSubsystem.runSimulationPeriodically();
+  }
 }

@@ -5,6 +5,8 @@ import static frc.robot.subsystems.drive.DriveConstants.FF_RAMP_RATE;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPLTVController;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,11 +23,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.bobot_state.BobotState;
+import frc.robot.subsystems.vision.PoseObservation;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -131,6 +136,17 @@ public class DriveSubsystem extends SubsystemBase {
       lastRightPositionMeters = getRightPositionMeters();
     }
     poseEstimator.update(rawGyroRotation, getLeftPositionMeters(), getRightPositionMeters());
+  }
+
+  PoseObservation globalObservation;
+
+  { // I don't know why but it forced me to add the curly brace...
+    while ((globalObservation = BobotState.getGlobalVisionObservations().poll()) != null) {
+      poseEstimator.addVisionMeasurement(
+          globalObservation.robotPose().toPose2d(), globalObservation.timestampSeconds());
+    }
+
+    BobotState.updateGlobalPose(this.getPose());
   }
 
   @AutoLogOutput
@@ -288,7 +304,28 @@ public class DriveSubsystem extends SubsystemBase {
                 }));
   }
 
-  /* public Command goFowardOneFoot() {
+  public Command driveWithExactHeading(Supplier<Rotation2d> targetHeading, DoubleSupplier forward) {
+    PIDController headingPID = new PIDController(3.0, 0.0, 0.0);
+    headingPID.enableContinuousInput(-Math.PI, Math.PI);
+    headingPID.setTolerance(Math.toRadians(2.0));
+    double maxOmega = DriveConstants.kMaxSpeed / (DriveConstants.kTrackWidthMeters / 2.0);
 
-  } */
+    return Commands.run(
+            () -> {
+              double omega =
+                  MathUtil.clamp(
+                      headingPID.calculate(
+                          getPose().getRotation().getRadians(), targetHeading.get().getRadians()),
+                      -maxOmega,
+                      maxOmega);
+              double vx = forward.getAsDouble() * DriveConstants.kMaxSpeed;
+              runClosedLoop(new ChassisSpeeds(vx, 0, omega));
+            },
+            this)
+        .finallyDo(
+            () -> {
+              runClosedLoop(new ChassisSpeeds());
+              headingPID.close();
+            });
+  }
 }

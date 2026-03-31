@@ -8,8 +8,11 @@ import static edu.wpi.first.units.Units.RPM;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.bobot_state.BobotState;
 import frc.robot.controllers.CommandCustomXboxController;
 import frc.robot.controllers.ControllerConstants;
 import frc.robot.subsystems.drive.DriveIO;
@@ -22,6 +25,7 @@ import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureIO;
 import frc.robot.subsystems.superstructure.SuperstructureIOSim;
 import frc.robot.subsystems.superstructure.SuperstructureIOSparkNEO;
+import frc.robot.subsystems.vision.Vision;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
@@ -34,6 +38,8 @@ public class RobotContainer {
   private final Superstructure superstructure;
 
   private final LoggedDashboardChooser<Command> autoChooser;
+
+  private final Vision vision = new Vision();
 
   public RobotContainer() {
 
@@ -110,6 +116,20 @@ public class RobotContainer {
     opController.rightTrigger().whileTrue(superstructure.launch());
 
     opController.a().whileTrue(superstructure.setRPSLauncherCommand(RPM.of(2800)));
+
+    driveController
+        .x()
+        .whileTrue(
+            driveSubsystem.driveWithExactHeading(
+                () -> {
+                  Translation2d targetTranslation =
+                      FieldConstants.Hub.centerOfHub.toTranslation2d();
+                  Translation2d currentTranslation = BobotState.getGlobalPose().getTranslation();
+                  return new Rotation2d(
+                      targetTranslation.getX() - currentTranslation.getX(),
+                      targetTranslation.getY() - currentTranslation.getY());
+                },
+                () -> -driveController.getLeftY()));
   }
 
   public Command getAutonomousCommand() {
