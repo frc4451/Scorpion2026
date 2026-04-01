@@ -136,11 +136,9 @@ public class DriveSubsystem extends SubsystemBase {
       lastRightPositionMeters = getRightPositionMeters();
     }
     poseEstimator.update(rawGyroRotation, getLeftPositionMeters(), getRightPositionMeters());
-  }
 
-  PoseObservation globalObservation;
-
-  { // I don't know why but it forced me to add the curly brace...
+    // Add Vision Measurements
+    PoseObservation globalObservation;
     while ((globalObservation = BobotState.getGlobalVisionObservations().poll()) != null) {
       poseEstimator.addVisionMeasurement(
           globalObservation.robotPose().toPose2d(), globalObservation.timestampSeconds());
@@ -304,10 +302,17 @@ public class DriveSubsystem extends SubsystemBase {
                 }));
   }
 
+  /**
+   * Drive forward robot-relative at an angle supplied by RobotContainer
+   *
+   * @param targetHeading Desired Robot Heading
+   * @param forward Y-forward controller input
+   */
   public Command driveWithExactHeading(Supplier<Rotation2d> targetHeading, DoubleSupplier forward) {
     PIDController headingPID = new PIDController(3.0, 0.0, 0.0);
     headingPID.enableContinuousInput(-Math.PI, Math.PI);
     headingPID.setTolerance(Math.toRadians(2.0));
+
     double maxOmega = DriveConstants.kMaxSpeed / (DriveConstants.kTrackWidthMeters / 2.0);
 
     return Commands.run(
@@ -328,4 +333,8 @@ public class DriveSubsystem extends SubsystemBase {
               headingPID.close();
             });
   }
+
+  /* public Command goFowardOneFoot() {
+
+  } */
 }

@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems.superstructure;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.intakingFeederVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.intakingIntakeVoltage;
@@ -14,10 +15,16 @@ import static frc.robot.subsystems.superstructure.SuperstructureConstants.launch
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUpFeederVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUpSeconds;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.FieldConstants;
+import frc.robot.bobot_state.BobotState;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
@@ -66,9 +73,14 @@ public class Superstructure extends SubsystemBase {
 
   /** Set the rollers to the values for launching. Spins up before feeding fuel. */
   public Command launch() {
+
+    AngularVelocity rpmFromDistance = LaunchCalculator.getVelocityFromDistance(Meters.of(LaunchCalculator.distanceToHubMeters));
+    AngularVelocity shootingVelocity = Constants.tuningMode ? RPM.of(tunableRPM.get()) : rpmFromDistance;
+
     return run(() -> {
+          // Get the Robot Pose and the Hub Location
           io.setFeederVoltage(spinUpFeederVoltage);
-          io.setIntakeLauncherVelocity(RPM.of(tunableRPM.get()));
+          io.setIntakeLauncherVelocity(shootingVelocity);
 
           // io.setAngularVelocity(-spinUpSeconds);
         })
@@ -77,7 +89,7 @@ public class Superstructure extends SubsystemBase {
             run(
                 () -> {
                   io.setFeederVoltage(launchingFeederVoltage);
-                  io.setIntakeLauncherVelocity(RPM.of(tunableRPM.get()));
+                  io.setIntakeLauncherVelocity(shootingVelocity);
                   // io.setIntakeLauncherVoltage(launchingLauncherVoltage);
                 }))
         .finallyDo(

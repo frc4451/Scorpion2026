@@ -44,22 +44,22 @@ public class VisionConstants {
                   "RearLeft",
                   new Transform3d(
                       new Translation3d(
-                          Units.inchesToMeters(19.438), // forward+
+                          Units.inchesToMeters(-19.438), // forward+
                           Units.inchesToMeters(11.750), // left+
                           Units.inchesToMeters(10.173)), // up+
                       new Rotation3d(
-                          0, Units.degreesToRadians(-35.0), Units.degreesToRadians(0.0)))),
+                          0, Units.degreesToRadians(-15.0), Units.degreesToRadians(135.0)))),
               SimCameraConfig.THRIFTY_CAM_80),
           new AprilTagCameraConfig(
               new VisionSource(
                   "RearRight",
                   new Transform3d(
                       new Translation3d(
-                          Units.inchesToMeters(19.438), // forward+
+                          Units.inchesToMeters(-19.438), // forward+
                           Units.inchesToMeters(-11.750), // left+
                           Units.inchesToMeters(10.173)), // up+
                       new Rotation3d(
-                          0, Units.degreesToRadians(-35.0), Units.degreesToRadians(0.0)))),
+                          0, Units.degreesToRadians(-15.0), Units.degreesToRadians(-135.0)))),
               SimCameraConfig.THRIFTY_CAM_80));
 
   public static final double ambiguityCutoff = 0.05;

@@ -26,6 +26,8 @@ import frc.robot.subsystems.superstructure.SuperstructureIO;
 import frc.robot.subsystems.superstructure.SuperstructureIOSim;
 import frc.robot.subsystems.superstructure.SuperstructureIOSparkNEO;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.util.AllianceFlipUtil;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
@@ -123,11 +125,16 @@ public class RobotContainer {
             driveSubsystem.driveWithExactHeading(
                 () -> {
                   Translation2d targetTranslation =
-                      FieldConstants.Hub.centerOfHub.toTranslation2d();
+                      AllianceFlipUtil.apply(FieldConstants.Hub.centerOfHub.toTranslation2d());
                   Translation2d currentTranslation = BobotState.getGlobalPose().getTranslation();
-                  return new Rotation2d(
+
+                  Rotation2d intakeToHubRotation =new Rotation2d(
                       targetTranslation.getX() - currentTranslation.getX(),
                       targetTranslation.getY() - currentTranslation.getY());
+
+                  Rotation2d shooterToHubRotation = intakeToHubRotation.plus(Rotation2d.k180deg);
+
+                  return shooterToHubRotation;
                 },
                 () -> -driveController.getLeftY()));
   }
