@@ -21,7 +21,14 @@ public class LaunchCalculator {
       new LoggedTunableNumber("Interpolation Test/Manual Feet From Hub", 6.0);
 
   static {
+    distanceToRPM.put(Units.feetToMeters(5), -2800.0);
+    distanceToRPM.put(Units.feetToMeters(6), -2900.0);
+    distanceToRPM.put(Units.feetToMeters(7), -3085.0);
     distanceToRPM.put(Units.feetToMeters(8), -3200.0);
+    distanceToRPM.put(Units.feetToMeters(9), -3400.0);
+    distanceToRPM.put(Units.feetToMeters(10), -3630.0);
+    distanceToRPM.put(Units.feetToMeters(11), -3700.0);
+    distanceToRPM.put(Units.feetToMeters(12), -3850.0);
   }
 
   public static AngularVelocity getVelocityFromDistance(Distance distance) {

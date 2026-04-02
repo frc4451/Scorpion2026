@@ -44,9 +44,9 @@ public class VisionConstants {
                   "RearLeft",
                   new Transform3d(
                       new Translation3d(
-                          Units.inchesToMeters(-19.438), // forward+
-                          Units.inchesToMeters(11.750), // left+
-                          Units.inchesToMeters(10.173)), // up+
+                          Units.inchesToMeters(-19.120), // forward+
+                          Units.inchesToMeters(11.763), // left+
+                          Units.inchesToMeters(9.934)), // up+
                       new Rotation3d(
                           0, Units.degreesToRadians(-15.0), Units.degreesToRadians(135.0)))),
               SimCameraConfig.THRIFTY_CAM_80),
@@ -55,9 +55,9 @@ public class VisionConstants {
                   "RearRight",
                   new Transform3d(
                       new Translation3d(
-                          Units.inchesToMeters(-19.438), // forward+
-                          Units.inchesToMeters(-11.750), // left+
-                          Units.inchesToMeters(10.173)), // up+
+                          Units.inchesToMeters(-19.120), // forward+
+                          Units.inchesToMeters(-11.763), // left+
+                          Units.inchesToMeters(9.934)), // up+
                       new Rotation3d(
                           0, Units.degreesToRadians(-15.0), Units.degreesToRadians(-135.0)))),
               SimCameraConfig.THRIFTY_CAM_80));
