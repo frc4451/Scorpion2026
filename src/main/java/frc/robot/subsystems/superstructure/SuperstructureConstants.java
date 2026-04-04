@@ -16,6 +16,10 @@ public class SuperstructureConstants {
   public static final double intakeLauncherMotorReduction = 1.0;
   public static final int intakeLauncherCurrentLimit = 60;
 
+  public static final int agitatorCanId = 9;
+  public static final double agitatorMotorReduction = 1.0;
+  public static final int agitatorCurrentLimit = 60;
+
   public static final double kLauncherKp = 0.001;
   public static final double kLauncherKi = 0.0;
   public static final double kLauncherKd = 0.0;
@@ -27,6 +31,7 @@ public class SuperstructureConstants {
   public static final double launchingLauncherVoltage = -7.0;
   public static final double spinUpFeederVoltage = 1.0;
   public static final double spinUpSeconds = 2.5;
+  public static final double launchingAgitatorVoltage = 5.0;
 }
 // 26.5 in length
 // 26.1-ish in width

@@ -35,7 +35,15 @@ public class LaunchCalculator {
     return RPM.of(distanceToRPM.get(distance.in(Meters)));
   }
 
-  public static Pose2d robotPose2d = BobotState.getGlobalPose();
-  public static Translation2d hubTranslation2d = AllianceFlipUtil.apply(FieldConstants.Hub.centerOfHub.toTranslation2d());
-  public static double distanceToHubMeters = hubTranslation2d.getDistance(robotPose2d.getTranslation());
+  public static AngularVelocity getVelocityToHub() {
+    Pose2d robotPose2d = BobotState.getGlobalPose();
+    Translation2d hubTranslation2d =
+        AllianceFlipUtil.apply(FieldConstants.Hub.centerOfHub.toTranslation2d());
+
+    double distanceToHubMeters = hubTranslation2d.getDistance(robotPose2d.getTranslation());
+
+    AngularVelocity rpmToHub = getVelocityFromDistance(Meters.of(distanceToHubMeters));
+
+    return rpmToHub;
+  }
 }

@@ -31,8 +31,11 @@ import java.util.function.DoubleSupplier;
 public class SuperstructureIOSparkNEO implements SuperstructureIO {
   private final SparkMax feeder = new SparkMax(feederCanId, MotorType.kBrushless);
   private final SparkMax intakeLauncher = new SparkMax(intakeLauncherCanId, MotorType.kBrushless);
+  private final SparkMax agitator = new SparkMax(agitatorCanId, MotorType.kBrushless);
+
   private final RelativeEncoder feederEncoder = feeder.getEncoder();
   private final RelativeEncoder intakeLauncherEncoder = intakeLauncher.getEncoder();
+  private final RelativeEncoder agitatorEncoder = agitator.getEncoder();
 
   private final SparkClosedLoopController intakeLauncherController =
       intakeLauncher.getClosedLoopController();
@@ -56,6 +59,24 @@ public class SuperstructureIOSparkNEO implements SuperstructureIO {
         () ->
             feeder.configure(
                 feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+
+    var agitatorConfig = new SparkMaxConfig();
+    agitatorConfig
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(agitatorCurrentLimit)
+        .voltageCompensation(12.0);
+    agitatorConfig
+        .encoder
+        .positionConversionFactor(agitatorMotorReduction) // Rotor Rotations
+        .velocityConversionFactor((2.0 * Math.PI) / 60.0 / agitatorMotorReduction)
+        .uvwMeasurementPeriod(10)
+        .uvwAverageDepth(2);
+    tryUntilOk(
+        agitator,
+        5,
+        () ->
+            agitator.configure(
+                agitatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     var intakeLauncherConfig = new SparkMaxConfig();
     intakeLauncherConfig
@@ -90,6 +111,14 @@ public class SuperstructureIOSparkNEO implements SuperstructureIO {
         (values) -> inputs.feederAppliedVolts = values[0] * values[1]);
     ifOk(feeder, feeder::getOutputCurrent, (value) -> inputs.feederCurrentAmps = value);
 
+    ifOk(agitator, agitatorEncoder::getPosition, (value) -> inputs.agitatorPositionRad = value);
+    ifOk(agitator, agitatorEncoder::getVelocity, (value) -> inputs.agitatorVelocityRPM = value);
+    ifOk(
+        agitator,
+        new DoubleSupplier[] {agitator::getAppliedOutput, agitator::getBusVoltage},
+        (values) -> inputs.agitatorAppliedVolts = values[0] * values[1]);
+    ifOk(agitator, agitator::getOutputCurrent, (value) -> inputs.agitatorCurrentAmps = value);
+
     ifOk(
         intakeLauncher,
         intakeLauncherEncoder::getPosition,
@@ -111,6 +140,11 @@ public class SuperstructureIOSparkNEO implements SuperstructureIO {
   @Override
   public void setFeederVoltage(double volts) {
     feeder.setVoltage(volts);
+  }
+
+  @Override
+  public void setAgitatorVoltage(double volts) {
+    agitator.setVoltage(volts);
   }
 
   @Override

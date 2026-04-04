@@ -18,6 +18,11 @@ public interface SuperstructureIO {
     public double feederAppliedVolts = 0.0;
     public double feederCurrentAmps = 0.0;
 
+    public double agitatorPositionRad = 0.0;
+    public double agitatorVelocityRPM = 0.0;
+    public double agitatorAppliedVolts = 0.0;
+    public double agitatorCurrentAmps = 0.0;
+
     public double intakeLauncherPositionRad = 0.0;
     public double intakeLauncherVelocityRPM = 0.0;
     public double intakeLauncherAppliedVolts = 0.0;
@@ -35,4 +40,7 @@ public interface SuperstructureIO {
 
   // For shooter velocity
   public default void setIntakeLauncherVelocity(AngularVelocity velocity) {}
+
+  // For agitator velocity
+  public default void setAgitatorVoltage(double volts) {}
 }

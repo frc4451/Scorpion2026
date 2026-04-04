@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.RPM;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -116,7 +114,7 @@ public class RobotContainer {
     opController.leftTrigger().whileTrue(superstructure.eject());
     opController.rightTrigger().whileTrue(superstructure.launch());
 
-    opController.a().whileTrue(superstructure.setRPSLauncherCommand(RPM.of(2800)));
+    // opController.a().whileTrue(superstructure.setRPSLauncherCommand(RPM.of(2800)));
 
     driveController
         .x()
@@ -137,6 +135,9 @@ public class RobotContainer {
                   return shooterToHubRotation;
                 },
                 () -> -driveController.getLeftY()));
+
+    // for testing
+    //driveController.a().whileTrue(superstructure.launch());
   }
 
   public Command getAutonomousCommand() {

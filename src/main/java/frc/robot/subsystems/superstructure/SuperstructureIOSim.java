@@ -20,11 +20,16 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 public class SuperstructureIOSim implements SuperstructureIO {
   private final DCMotor intakeLauncherMotor = DCMotor.getNEO(1);
   private final DCMotor intakeFeederMotor = DCMotor.getNEO(1);
+  private final DCMotor intakeAgitatorMotor = DCMotor.getNEO(1);
 
   private DCMotorSim feederSim =
       new DCMotorSim(
           LinearSystemId.createDCMotorSystem(intakeFeederMotor, 0.004, feederMotorReduction),
           intakeFeederMotor);
+  private DCMotorSim agitatorSim =
+      new DCMotorSim(
+          LinearSystemId.createDCMotorSystem(intakeAgitatorMotor, 0.004, agitatorMotorReduction),
+          intakeAgitatorMotor);
   private DCMotorSim intakeLauncherSim =
       new DCMotorSim(
           LinearSystemId.createDCMotorSystem(
@@ -32,6 +37,7 @@ public class SuperstructureIOSim implements SuperstructureIO {
           intakeLauncherMotor);
 
   private double feederAppliedVolts = 0.0;
+  private double agitatorAppliedVolts = 0.0;
   private double intakeLauncherAppliedVolts = 0.0;
 
   private final PIDController intakeLauncherPID =
@@ -43,6 +49,9 @@ public class SuperstructureIOSim implements SuperstructureIO {
   public void updateInputs(SuperstructureIOInputs inputs) {
     feederSim.setInputVoltage(feederAppliedVolts);
     feederSim.update(0.02);
+
+    agitatorSim.setInputVoltage(agitatorAppliedVolts);
+    agitatorSim.update(0.02);
 
     if (isClosedLoop) {
       double currentRPM = intakeLauncherSim.getAngularVelocityRPM();
@@ -58,6 +67,11 @@ public class SuperstructureIOSim implements SuperstructureIO {
     inputs.feederAppliedVolts = feederAppliedVolts;
     inputs.feederCurrentAmps = feederSim.getCurrentDrawAmps();
 
+    inputs.agitatorPositionRad = agitatorSim.getAngularPositionRad();
+    inputs.agitatorVelocityRPM = agitatorSim.getAngularVelocityRadPerSec();
+    inputs.agitatorAppliedVolts = agitatorAppliedVolts;
+    inputs.agitatorCurrentAmps = agitatorSim.getCurrentDrawAmps();
+
     inputs.intakeLauncherPositionRad = intakeLauncherSim.getAngularPositionRad();
     inputs.intakeLauncherVelocityRPM = intakeLauncherSim.getAngularVelocityRPM();
     inputs.intakeLauncherAppliedVolts = intakeLauncherAppliedVolts;
@@ -67,6 +81,11 @@ public class SuperstructureIOSim implements SuperstructureIO {
   @Override
   public void setFeederVoltage(double volts) {
     feederAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+  }
+
+  @Override
+  public void setAgitatorVoltage(double volts) {
+    agitatorAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
   }
 
   @Override

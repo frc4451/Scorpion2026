@@ -41,7 +41,7 @@ public class VisionConstants {
           // FLO
           new AprilTagCameraConfig(
               new VisionSource(
-                  "RearLeft",
+                  "Freddy",
                   new Transform3d(
                       new Translation3d(
                           Units.inchesToMeters(-19.120), // forward+
@@ -52,7 +52,7 @@ public class VisionConstants {
               SimCameraConfig.THRIFTY_CAM_80),
           new AprilTagCameraConfig(
               new VisionSource(
-                  "RearRight",
+                  "Yogi",
                   new Transform3d(
                       new Translation3d(
                           Units.inchesToMeters(-19.120), // forward+

@@ -7,24 +7,18 @@
 
 package frc.robot.subsystems.superstructure;
 
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.intakingFeederVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.intakingIntakeVoltage;
+import static frc.robot.subsystems.superstructure.SuperstructureConstants.launchingAgitatorVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.launchingFeederVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUpFeederVoltage;
-import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUpSeconds;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.FieldConstants;
-import frc.robot.bobot_state.BobotState;
-import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
@@ -73,28 +67,49 @@ public class Superstructure extends SubsystemBase {
 
   /** Set the rollers to the values for launching. Spins up before feeding fuel. */
   public Command launch() {
-
-    AngularVelocity rpmFromDistance = LaunchCalculator.getVelocityFromDistance(Meters.of(LaunchCalculator.distanceToHubMeters));
-    AngularVelocity shootingVelocity = Constants.tuningMode ? RPM.of(tunableRPM.get()) : rpmFromDistance;
-
     return run(() -> {
+          Logger.recordOutput(getName() + "/LaunchState", "SPIN UP");
+          AngularVelocity shootingVelocity =
+              Constants.tuningMode ? RPM.of(tunableRPM.get()) : LaunchCalculator.getVelocityToHub();
+
           // Get the Robot Pose and the Hub Location
           io.setFeederVoltage(spinUpFeederVoltage);
+          io.setAgitatorVoltage(launchingAgitatorVoltage);
           io.setIntakeLauncherVelocity(shootingVelocity);
 
           // io.setAngularVelocity(-spinUpSeconds);
+          Logger.recordOutput(getName() + "/Goal", shootingVelocity);
         })
-        .withTimeout(spinUpSeconds)
+        .until(
+            () -> {
+              AngularVelocity shootingVelocity =
+                  Constants.tuningMode
+                      ? RPM.of(tunableRPM.get())
+                      : LaunchCalculator.getVelocityToHub();
+              return RPM.of(inputs.intakeLauncherVelocityRPM).isNear(shootingVelocity, 0.1);
+            })
+        // .withTimeout(spinUpSeconds)
         .andThen(
             run(
                 () -> {
+                  Logger.recordOutput(getName() + "/LaunchState", "FIRING");
+
+                  AngularVelocity shootingVelocity =
+                      Constants.tuningMode
+                          ? RPM.of(tunableRPM.get())
+                          : LaunchCalculator.getVelocityToHub();
+
                   io.setFeederVoltage(launchingFeederVoltage);
+                  io.setAgitatorVoltage(launchingAgitatorVoltage);
                   io.setIntakeLauncherVelocity(shootingVelocity);
                   // io.setIntakeLauncherVoltage(launchingLauncherVoltage);
                 }))
         .finallyDo(
             () -> {
+              Logger.recordOutput(getName() + "/LaunchState", "IDLE");
+
               io.setFeederVoltage(0.0);
+              io.setAgitatorVoltage(0.0);
               io.setIntakeLauncherVoltage(0.0);
             });
   }
