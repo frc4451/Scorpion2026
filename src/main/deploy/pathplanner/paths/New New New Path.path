@@ -1,0 +1,198 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.133975903614458,
+        "y": 4.00221686746988
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.942626506024096,
+        "y": 3.9803614457831324
+      },
+      "isLocked": false,
+      "linkedName": "Demon Slayer - Shooting"
+    },
+    {
+      "anchor": {
+        "x": 1.7570843373493976,
+        "y": 4.187987951807229
+      },
+      "prevControl": {
+        "x": 2.1614096385542165,
+        "y": 4.920144578313252
+      },
+      "nextControl": {
+        "x": 1.6362286621408555,
+        "y": 3.9691411885917613
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.101192771084338,
+        "y": 0.516277108433735
+      },
+      "prevControl": {
+        "x": 1.91236028302864,
+        "y": 0.37522918612204176
+      },
+      "nextControl": {
+        "x": 4.390662650602409,
+        "y": 0.669265060240964
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.231867469879518,
+        "y": 0.7785421686746998
+      },
+      "prevControl": {
+        "x": 6.040746987951807,
+        "y": 0.7020481927710844
+      },
+      "nextControl": {
+        "x": 8.39755615415595,
+        "y": 0.8534029098667654
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.811036144578313,
+        "y": 1.9259518072289166
+      },
+      "prevControl": {
+        "x": 7.778253012048193,
+        "y": 1.4888433734939759
+      },
+      "nextControl": {
+        "x": 7.878232508785719,
+        "y": 2.821903329994324
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.341144578313252,
+        "y": 4.00221686746988
+      },
+      "prevControl": {
+        "x": 8.157414290394737,
+        "y": 4.132820021402917
+      },
+      "nextControl": {
+        "x": 6.521566265060241,
+        "y": 3.871084337349398
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.231867469879518,
+        "y": 1.8166746987951807
+      },
+      "prevControl": {
+        "x": 7.07887951807229,
+        "y": 2.242855421686747
+      },
+      "nextControl": {
+        "x": 7.525034162982508,
+        "y": 0.9999960537225601
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.674783132530121,
+        "y": 0.7785421686746998
+      },
+      "prevControl": {
+        "x": 4.922852601708538,
+        "y": 0.7475334850273976
+      },
+      "nextControl": {
+        "x": 4.426713663351704,
+        "y": 0.8095508523220021
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.101192771084338,
+        "y": 1.204722891566264
+      },
+      "prevControl": {
+        "x": 3.101192771084338,
+        "y": 0.5933567776990667
+      },
+      "nextControl": {
+        "x": 3.101192771084338,
+        "y": 1.7620361445783135
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.133975903614458,
+        "y": 2.4941927710843377
+      },
+      "prevControl": {
+        "x": 3.0969037163901914,
+        "y": 1.8120645261578336
+      },
+      "nextControl": {
+        "x": 3.188614457831325,
+        "y": 3.499542168674699
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.9919156626506025,
+        "y": 4.00221686746988
+      },
+      "prevControl": {
+        "x": 3.494590361445783,
+        "y": 4.340975903614459
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Demon Slayer",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 52.92692668268957
+  },
+  "useDefaultConstraints": true
+}

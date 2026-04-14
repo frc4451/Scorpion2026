@@ -48,7 +48,7 @@ public class VisionConstants {
                           Units.inchesToMeters(11.763), // left+
                           Units.inchesToMeters(9.934)), // up+
                       new Rotation3d(
-                          0, Units.degreesToRadians(-15.0), Units.degreesToRadians(135.0)))),
+                          0, Units.degreesToRadians(-35.0), Units.degreesToRadians(135.0)))),
               SimCameraConfig.THRIFTY_CAM_80),
           new AprilTagCameraConfig(
               new VisionSource(
@@ -59,7 +59,7 @@ public class VisionConstants {
                           Units.inchesToMeters(-11.763), // left+
                           Units.inchesToMeters(9.934)), // up+
                       new Rotation3d(
-                          0, Units.degreesToRadians(-15.0), Units.degreesToRadians(-135.0)))),
+                          0, Units.degreesToRadians(-35.0), Units.degreesToRadians(-135.0)))),
               SimCameraConfig.THRIFTY_CAM_80));
 
   public static final double ambiguityCutoff = 0.05;

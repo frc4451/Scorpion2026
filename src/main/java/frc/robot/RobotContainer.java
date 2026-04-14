@@ -73,26 +73,32 @@ public class RobotContainer {
     superstructure = new Superstructure(superstructureIO);
     configureBindings();
 
+    NamedCommands.registerCommand("Launch", superstructure.autoLaunch(3.5));
+    NamedCommands.registerCommand("Eject", superstructure.eject());
+    NamedCommands.registerCommand("Intake", superstructure.intake());
+
+    // NamedCommands.registerCommand("Launch", Commands.print("LAUNCH TRIGGERED"));
+
     autoChooser =
         new LoggedDashboardChooser<Command>("Auto Choices", AutoBuilder.buildAutoChooser());
     configureAutos();
-
-    NamedCommands.registerCommand("Launch", superstructure.autoLaunch(2.5));
-    NamedCommands.registerCommand("Eject", superstructure.eject());
-    NamedCommands.registerCommand("Intake", superstructure.intake());
   }
 
   private void configureAutos() {
-    Command SimpleAuto = AutoBuilder.buildAuto("Simple");
-    Command PokemonAuto = AutoBuilder.buildAuto("Pokemon");
+    // Command SimpleAuto = AutoBuilder.buildAuto("Simple");
+    // Command PokemonAuto = AutoBuilder.buildAuto("Pokemon");
 
     autoChooser.addOption(
         "Sit and Shoot",
         Commands.sequence(Commands.deadline(Commands.waitSeconds(10), superstructure.launch())));
     autoChooser.addOption(
         "Feed Forward Characterization", driveSubsystem.feedforwardCharacterization());
-    autoChooser.addOption("Simple", SimpleAuto);
-    autoChooser.addOption("Pokemon", PokemonAuto);
+    // autoChooser.addOption("Simple", SimpleAuto);
+    // autoChooser.addOption("Pokemon", PokemonAuto);
+
+    // new SequentialCommandGroup( *********** BEYONCA
+    // AutoBuilder.followPath("Depot"), return autoLaunch() *************** BEYONCA
+    // );  ************ BEYONCA
   }
 
   // public Command getAutonomousPath() {
@@ -137,7 +143,7 @@ public class RobotContainer {
                 () -> -driveController.getLeftY()));
 
     // for testing
-    //driveController.a().whileTrue(superstructure.launch());
+    // driveController.a().whileTrue(superstructure.launch());
   }
 
   public Command getAutonomousCommand() {

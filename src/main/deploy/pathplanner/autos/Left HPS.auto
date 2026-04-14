@@ -5,15 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "Launch"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Pokemon 01"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Left move back"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Launch"
+                }
+              }
+            ]
           }
         },
         {
@@ -23,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pokemon 02"
+                  "pathName": "Left HPS"
                 }
               },
               {
@@ -36,12 +43,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Pokemon 03"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Launch"
@@ -51,6 +52,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Pokemon, Simple, Visions, Demon Slay",
+  "folder": "OUR alliance paths",
   "choreoAuto": false
 }

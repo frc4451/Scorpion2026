@@ -39,7 +39,7 @@ public interface SuperstructureIO {
   public default void setIntakeLauncherVoltage(double volts) {}
 
   // For shooter velocity
-  public default void setIntakeLauncherVelocity(AngularVelocity velocity) {}
+  public default void setIntakeLauncherVelocity(AngularVelocity shootingVelocity) {}
 
   // For agitator velocity
   public default void setAgitatorVoltage(double volts) {}

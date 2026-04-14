@@ -31,7 +31,7 @@ public class SuperstructureConstants {
   public static final double launchingLauncherVoltage = -7.0;
   public static final double spinUpFeederVoltage = 1.0;
   public static final double spinUpSeconds = 2.5;
-  public static final double launchingAgitatorVoltage = 5.0;
+  public static final double launchingAgitatorVoltage = -12.0;
 }
 // 26.5 in length
 // 26.1-ish in width

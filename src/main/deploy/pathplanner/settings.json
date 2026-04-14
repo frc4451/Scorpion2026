@@ -4,11 +4,17 @@
   "holonomicMode": false,
   "pathFolders": [
     "Demon Slayer",
-    "Rooster Fighter",
+    "Frieren",
     "ReZero",
+    "Rooster Fighter",
     "Test"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Frie 2.0 Paths (Shoot-move-intake-shoot)",
+    "Frie Paths (Move-intake-shoot)",
+    "OUR alliance paths",
+    "Pokemon, Simple, Visions, Demon Slay"
+  ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,

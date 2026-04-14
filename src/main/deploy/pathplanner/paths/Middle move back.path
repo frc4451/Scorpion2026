@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.133975903614458,
-        "y": 4.00221686746988
+        "x": 3.625722891566265,
+        "y": 4.035
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3471807228915655,
-        "y": 3.958506024096385
+        "x": 3.3634578313253014,
+        "y": 4.024072289156626
       },
       "isLocked": false,
-      "linkedName": "Demon Slayer - Shooting"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.4948192771084337,
-        "y": 3.707168674698795
+        "x": 2.9919156626506025,
+        "y": 4.035
       },
       "prevControl": {
-        "x": 2.259759036144578,
-        "y": 3.6853132530120476
+        "x": 3.374385542168675,
+        "y": 4.056855421686747
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,10 +45,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Demon Slayer",
+  "folder": "Frieren",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 52.92692668268957
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

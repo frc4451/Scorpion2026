@@ -58,10 +58,12 @@ public class Superstructure extends SubsystemBase {
         () -> {
           io.setFeederVoltage(-intakingFeederVoltage);
           io.setIntakeLauncherVoltage(-intakingIntakeVoltage);
+          io.setAgitatorVoltage(launchingAgitatorVoltage);
         },
         () -> {
           io.setFeederVoltage(0.0);
           io.setIntakeLauncherVoltage(0.0);
+          io.setAgitatorVoltage(0.0);
         });
   }
 
