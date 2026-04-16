@@ -6,8 +6,11 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.bobot_state.BobotState;
 import frc.robot.controllers.CommandCustomXboxController;
 import frc.robot.controllers.ControllerConstants;
 import frc.robot.subsystems.drive.DriveIO;
@@ -20,6 +23,8 @@ import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureIO;
 import frc.robot.subsystems.superstructure.SuperstructureIOSim;
 import frc.robot.subsystems.superstructure.SuperstructureIOSparkNEO;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.util.AllianceFlipUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
@@ -32,6 +37,8 @@ public class RobotContainer {
   private final Superstructure superstructure;
 
   private final LoggedDashboardChooser<Command> autoChooser;
+
+  private final Vision vision = new Vision();
 
   public RobotContainer() {
 
@@ -66,26 +73,32 @@ public class RobotContainer {
     superstructure = new Superstructure(superstructureIO);
     configureBindings();
 
+    NamedCommands.registerCommand("Launch", superstructure.autoLaunch(3.5));
+    NamedCommands.registerCommand("Eject", superstructure.eject());
+    NamedCommands.registerCommand("Intake", superstructure.intake());
+
+    // NamedCommands.registerCommand("Launch", Commands.print("LAUNCH TRIGGERED"));
+
     autoChooser =
         new LoggedDashboardChooser<Command>("Auto Choices", AutoBuilder.buildAutoChooser());
     configureAutos();
-
-    NamedCommands.registerCommand("Launch", superstructure.autoLaunch(2.5));
-    NamedCommands.registerCommand("Eject", superstructure.eject());
-    NamedCommands.registerCommand("Intake", superstructure.intake());
   }
 
   private void configureAutos() {
-    Command SimpleAuto = AutoBuilder.buildAuto("Simple.auto");
-    Command PokemonAuto = AutoBuilder.buildAuto("Pokemon.auto");
+    // Command SimpleAuto = AutoBuilder.buildAuto("Simple");
+    // Command PokemonAuto = AutoBuilder.buildAuto("Pokemon");
 
     autoChooser.addOption(
         "Sit and Shoot",
         Commands.sequence(Commands.deadline(Commands.waitSeconds(10), superstructure.launch())));
     autoChooser.addOption(
         "Feed Forward Characterization", driveSubsystem.feedforwardCharacterization());
-    autoChooser.addOption("Simple", SimpleAuto);
-    autoChooser.addOption("Pokemon", PokemonAuto);
+    // autoChooser.addOption("Simple", SimpleAuto);
+    // autoChooser.addOption("Pokemon", PokemonAuto);
+
+    // new SequentialCommandGroup( *********** BEYONCA
+    // AutoBuilder.followPath("Depot"), return autoLaunch() *************** BEYONCA
+    // );  ************ BEYONCA
   }
 
   // public Command getAutonomousPath() {
@@ -106,6 +119,31 @@ public class RobotContainer {
     driveController.rightTrigger().whileTrue(superstructure.intake());
     opController.leftTrigger().whileTrue(superstructure.eject());
     opController.rightTrigger().whileTrue(superstructure.launch());
+
+    // opController.a().whileTrue(superstructure.setRPSLauncherCommand(RPM.of(2800)));
+
+    driveController
+        .x()
+        .whileTrue(
+            driveSubsystem.driveWithExactHeading(
+                () -> {
+                  Translation2d targetTranslation =
+                      AllianceFlipUtil.apply(FieldConstants.Hub.centerOfHub.toTranslation2d());
+                  Translation2d currentTranslation = BobotState.getGlobalPose().getTranslation();
+
+                  Rotation2d intakeToHubRotation =
+                      new Rotation2d(
+                          targetTranslation.getX() - currentTranslation.getX(),
+                          targetTranslation.getY() - currentTranslation.getY());
+
+                  Rotation2d shooterToHubRotation = intakeToHubRotation.plus(Rotation2d.k180deg);
+
+                  return shooterToHubRotation;
+                },
+                () -> -driveController.getLeftY()));
+
+    // for testing
+    // driveController.a().whileTrue(superstructure.launch());
   }
 
   public Command getAutonomousCommand() {

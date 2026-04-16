@@ -27,8 +27,11 @@ import java.util.function.DoubleSupplier;
 public class SuperstructureIOSparkCIM implements SuperstructureIO {
   private final SparkMax feeder = new SparkMax(feederCanId, MotorType.kBrushed);
   private final SparkMax intakeLauncher = new SparkMax(intakeLauncherCanId, MotorType.kBrushed);
+  private final SparkMax agitator = new SparkMax(agitatorCanId, MotorType.kBrushed);
+
   private final RelativeEncoder feederEncoder = feeder.getEncoder();
   private final RelativeEncoder intakeLauncherEncoder = intakeLauncher.getEncoder();
+  private final RelativeEncoder agitatorEncoder = agitator.getEncoder();
 
   public SuperstructureIOSparkCIM() {
     var feederConfig = new SparkMaxConfig();
@@ -38,8 +41,7 @@ public class SuperstructureIOSparkCIM implements SuperstructureIO {
         .voltageCompensation(12.0);
     feederConfig
         .encoder
-        .positionConversionFactor(
-            2.0 * Math.PI / feederMotorReduction) // Rotor Rotations -> Roller Radians
+        .positionConversionFactor(intakeLauncherMotorReduction) // Rotor Rotations
         .velocityConversionFactor((2.0 * Math.PI) / 60.0 / feederMotorReduction)
         .uvwMeasurementPeriod(10)
         .uvwAverageDepth(2);
@@ -50,6 +52,24 @@ public class SuperstructureIOSparkCIM implements SuperstructureIO {
             feeder.configure(
                 feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
+    var agitatorConfig = new SparkMaxConfig();
+    agitatorConfig
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(agitatorCurrentLimit)
+        .voltageCompensation(12.0);
+    agitatorConfig
+        .encoder
+        .positionConversionFactor(agitatorMotorReduction) // Rotor Rotations
+        .velocityConversionFactor((2.0 * Math.PI) / 60.0 / agitatorMotorReduction)
+        .uvwMeasurementPeriod(10)
+        .uvwAverageDepth(2);
+    tryUntilOk(
+        agitator,
+        5,
+        () ->
+            agitator.configure(
+                agitatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+
     var intakeLauncherConfig = new SparkMaxConfig();
     intakeLauncherConfig
         .idleMode(IdleMode.kBrake)
@@ -58,9 +78,8 @@ public class SuperstructureIOSparkCIM implements SuperstructureIO {
         .voltageCompensation(12.0);
     intakeLauncherConfig
         .encoder
-        .positionConversionFactor(
-            2.0 * Math.PI / intakeLauncherMotorReduction) // Rotor Rotations -> Roller Radians
-        .velocityConversionFactor((2.0 * Math.PI) / 60.0 / intakeLauncherMotorReduction)
+        .positionConversionFactor(intakeLauncherMotorReduction) // Rotor Rotations
+        .velocityConversionFactor(60.0 / intakeLauncherMotorReduction)
         .uvwMeasurementPeriod(10)
         .uvwAverageDepth(2);
     tryUntilOk(
@@ -82,6 +101,14 @@ public class SuperstructureIOSparkCIM implements SuperstructureIO {
         (values) -> inputs.feederAppliedVolts = values[0] * values[1]);
     ifOk(feeder, feeder::getOutputCurrent, (value) -> inputs.feederCurrentAmps = value);
 
+    ifOk(agitator, agitatorEncoder::getPosition, (value) -> inputs.agitatorPositionRad = value);
+    ifOk(agitator, agitatorEncoder::getVelocity, (value) -> inputs.agitatorVelocityRPM = value);
+    ifOk(
+        agitator,
+        new DoubleSupplier[] {agitator::getAppliedOutput, agitator::getBusVoltage},
+        (values) -> inputs.agitatorAppliedVolts = values[0] * values[1]);
+    ifOk(agitator, agitator::getOutputCurrent, (value) -> inputs.agitatorCurrentAmps = value);
+
     ifOk(
         intakeLauncher,
         intakeLauncherEncoder::getPosition,
@@ -89,7 +116,7 @@ public class SuperstructureIOSparkCIM implements SuperstructureIO {
     ifOk(
         intakeLauncher,
         intakeLauncherEncoder::getVelocity,
-        (value) -> inputs.intakeLauncherVelocityRadPerSec = value);
+        (value) -> inputs.intakeLauncherVelocityRPM = value);
     ifOk(
         intakeLauncher,
         new DoubleSupplier[] {intakeLauncher::getAppliedOutput, intakeLauncher::getBusVoltage},
@@ -103,6 +130,11 @@ public class SuperstructureIOSparkCIM implements SuperstructureIO {
   @Override
   public void setFeederVoltage(double volts) {
     feeder.setVoltage(volts);
+  }
+
+  @Override
+  public void setAgitatorVoltage(double volts) {
+    agitator.setVoltage(volts);
   }
 
   @Override

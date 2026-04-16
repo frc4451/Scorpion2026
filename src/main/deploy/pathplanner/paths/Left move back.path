@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.855204819277109,
-        "y": 7.4572753209700435
+        "x": 3.5710843373493972,
+        "y": 5.892710843373494
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.8059156626506025,
-        "y": 7.4553734939759035
+        "x": 3.3306746987951814,
+        "y": 6.329819277108435
       },
       "isLocked": false,
-      "linkedName": "Pokemon - Start"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.815378031383736,
-        "y": 7.4572753209700435
+        "x": 3.276,
+        "y": 6.428
       },
       "prevControl": {
-        "x": 4.42344578313253,
-        "y": 7.433518072289157
+        "x": 3.450843373493976,
+        "y": 6.056457831325302
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Pokemon - Under Trench"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Rooster Fighter",
+  "folder": "Frieren",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

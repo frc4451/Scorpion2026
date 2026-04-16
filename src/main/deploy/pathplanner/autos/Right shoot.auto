@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Demon Slayer 01"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake"
+            "pathName": "Right move back"
           }
         },
         {
@@ -26,6 +20,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Pokemon, Simple, Visions, Demon Slay",
+  "folder": "Frie 2.0 Paths (Shoot-move-intake-shoot)",
   "choreoAuto": false
 }

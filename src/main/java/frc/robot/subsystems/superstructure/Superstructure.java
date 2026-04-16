@@ -7,21 +7,27 @@
 
 package frc.robot.subsystems.superstructure;
 
+import static edu.wpi.first.units.Units.RPM;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.intakingFeederVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.intakingIntakeVoltage;
+import static frc.robot.subsystems.superstructure.SuperstructureConstants.launchingAgitatorVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.launchingFeederVoltage;
-import static frc.robot.subsystems.superstructure.SuperstructureConstants.launchingLauncherVoltage;
 import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUpFeederVoltage;
-import static frc.robot.subsystems.superstructure.SuperstructureConstants.spinUpSeconds;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.util.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 public class Superstructure extends SubsystemBase {
   private final SuperstructureIO io;
   private final SuperstructureIOInputsAutoLogged inputs = new SuperstructureIOInputsAutoLogged();
+
+  private final LoggedTunableNumber tunableRPM =
+      new LoggedTunableNumber(getName() + "/IntakeLauncherRPM", 3000.0);
 
   public Superstructure(SuperstructureIO io) {
     this.io = io;
@@ -52,34 +58,73 @@ public class Superstructure extends SubsystemBase {
         () -> {
           io.setFeederVoltage(-intakingFeederVoltage);
           io.setIntakeLauncherVoltage(-intakingIntakeVoltage);
+          io.setAgitatorVoltage(launchingAgitatorVoltage);
         },
         () -> {
           io.setFeederVoltage(0.0);
           io.setIntakeLauncherVoltage(0.0);
+          io.setAgitatorVoltage(0.0);
         });
   }
 
   /** Set the rollers to the values for launching. Spins up before feeding fuel. */
   public Command launch() {
     return run(() -> {
+          Logger.recordOutput(getName() + "/LaunchState", "SPIN UP");
+          AngularVelocity shootingVelocity =
+              Constants.tuningMode ? RPM.of(tunableRPM.get()) : LaunchCalculator.getVelocityToHub();
+
+          // Get the Robot Pose and the Hub Location
           io.setFeederVoltage(spinUpFeederVoltage);
-          io.setIntakeLauncherVoltage(launchingLauncherVoltage);
+          io.setAgitatorVoltage(launchingAgitatorVoltage);
+          io.setIntakeLauncherVelocity(shootingVelocity);
+
+          // io.setAngularVelocity(-spinUpSeconds);
+          Logger.recordOutput(getName() + "/Goal", shootingVelocity);
         })
-        .withTimeout(spinUpSeconds)
+        .until(
+            () -> {
+              AngularVelocity shootingVelocity =
+                  Constants.tuningMode
+                      ? RPM.of(tunableRPM.get())
+                      : LaunchCalculator.getVelocityToHub();
+              return RPM.of(inputs.intakeLauncherVelocityRPM).isNear(shootingVelocity, 0.1);
+            })
+        // .withTimeout(spinUpSeconds)
         .andThen(
             run(
                 () -> {
+                  Logger.recordOutput(getName() + "/LaunchState", "FIRING");
+
+                  AngularVelocity shootingVelocity =
+                      Constants.tuningMode
+                          ? RPM.of(tunableRPM.get())
+                          : LaunchCalculator.getVelocityToHub();
+
                   io.setFeederVoltage(launchingFeederVoltage);
-                  io.setIntakeLauncherVoltage(launchingLauncherVoltage);
+                  io.setAgitatorVoltage(launchingAgitatorVoltage);
+                  io.setIntakeLauncherVelocity(shootingVelocity);
+                  // io.setIntakeLauncherVoltage(launchingLauncherVoltage);
                 }))
         .finallyDo(
             () -> {
+              Logger.recordOutput(getName() + "/LaunchState", "IDLE");
+
               io.setFeederVoltage(0.0);
+              io.setAgitatorVoltage(0.0);
               io.setIntakeLauncherVoltage(0.0);
             });
   }
 
   public Command autoLaunch(double time) {
     return Commands.deadline(Commands.waitSeconds(time), launch());
+  }
+
+  public Command setRPSLauncherCommand(AngularVelocity velocity) {
+    return run(
+        () -> {
+          io.setIntakeLauncherVelocity(RPM.of(tunableRPM.get()));
+          Logger.recordOutput(getName() + "/SetShooterVelocity", RPM.of(tunableRPM.get()));
+        });
   }
 }

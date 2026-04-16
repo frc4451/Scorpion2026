@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.855204819277109,
-        "y": 7.4572753209700435
+        "x": 3.0684096385542166,
+        "y": 4.483036144578314
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.8059156626506025,
-        "y": 7.4553734939759035
+        "x": 4.068409638554217,
+        "y": 4.483036144578314
       },
       "isLocked": false,
-      "linkedName": "Pokemon - Start"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.815378031383736,
-        "y": 7.4572753209700435
+        "x": 4.0,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 4.42344578313253,
-        "y": 7.433518072289157
+        "x": 3.0,
+        "y": 6.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Pokemon - Under Trench"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Rooster Fighter",
+  "folder": "Demon Slayer",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

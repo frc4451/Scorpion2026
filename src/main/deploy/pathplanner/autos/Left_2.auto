@@ -5,15 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Launch"
+            "pathName": "Left move back"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Pokemon 01"
+            "name": "Launch"
           }
         },
         {
@@ -23,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pokemon 02"
+                  "pathName": null
                 }
               },
               {
@@ -36,12 +36,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Pokemon 03"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Launch"
@@ -51,6 +45,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Pokemon, Simple, Visions, Demon Slay",
+  "folder": "Frie 2.0 Paths (Shoot-move-intake-shoot)",
   "choreoAuto": false
 }
